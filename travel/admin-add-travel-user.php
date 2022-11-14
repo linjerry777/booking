@@ -117,7 +117,7 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                 </li>
 
                 <li>
-                    <a href="../home/admin.php">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>

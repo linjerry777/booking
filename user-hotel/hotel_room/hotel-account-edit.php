@@ -4,6 +4,10 @@ use LDAP\Result;
 
 require_once("../../db-connect2.php");
 session_start();
+if (!isset($_SESSION["account"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
 $email = $_SESSION["email"];
 $sql = "SELECT * FROM hotel_account WHERE email='$email' AND valid=1";
 $result = $conn->query($sql);

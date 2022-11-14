@@ -183,49 +183,62 @@ $row = $result->fetch_assoc();
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">會員人數
+                        <div class="numbers"><?= $row["account"] ?></div>
+                        <div class="cardName">會員
 
                         </div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="person-circle-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">廠商人數</div>
+                        <div class="numbers"><?= $row["address"] ?></div>
+                        <div class="cardName">地址</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                        <ion-icon name="compass-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">產品數量</div>
+                        <div class="numbers">
+                            <?php
+                            if ($row["area"] == 0) {
+                                echo "北";
+                            } else if ($row["area"] == 1) {
+                                echo "中";
+                            } else if ($row["area"] == 2) {
+                                echo "南";
+                            } ?>
+                        </div>
+                        <div class="cardName">地區</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <ion-icon name="locate-outline"></ion-icon>
                     </div>
                 </div>
+
+
 
                 <div class="card">
                     <div>
-                        <div class="numbers">$7,842</div>
-                        <div class="cardName">營利</div>
+                        <div class="numbers"><?= $row["start_date"] ?></div>
+                        <div class="cardName">開業日期</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
+                        <ion-icon name="time-outline"></ion-icon>
                     </div>
                 </div>
+
+
             </div>
 
             <!-- ================ Order Details List ================= -->
@@ -405,13 +418,13 @@ $row = $result->fetch_assoc();
                                 <td>地區</td>
                                 <td>
                                     <?php
-                                        if ($row["area"] == 0) {
-                                            echo "北";
-                                        } else if ($row["area"] == 1) {
-                                            echo "中";
-                                        } else if ($row["area"] == 2) {
-                                            echo "南";
-                                        }
+                                    if ($row["area"] == 0) {
+                                        echo "北";
+                                    } else if ($row["area"] == 1) {
+                                        echo "中";
+                                    } else if ($row["area"] == 2) {
+                                        echo "南";
+                                    }
                                     ?>
                                 </td>
                             </tr>

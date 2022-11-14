@@ -29,7 +29,10 @@ if (isset($_GET["search"])) {
     //計算頁數
     $totalPage = ceil($userCount / $per_page);
     // 計算人數
-
+    $nowsevenday = date("Y-m-d", strtotime("-1 month"));
+    $sqlrecentHotel = "SELECT * FROM hotel_account WHERE created_at >= '$nowsevenday' ";
+    $resultrecentHotel = $conn->query($sqlrecentHotel);
+    $recentHotel = $resultrecentHotel->num_rows;
 }
 
 
@@ -215,36 +218,25 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">廠商人數</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">產品數量</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">$7,842</div>
-                        <div class="cardName">營利</div>
+                        <div class="numbers">
+                            <?php if (isset($_GET["search"])) {
+                                echo "未定";
+                            } else {
+                                echo $recentHotel . "家";
+                            }
+                            ?>
+                        </div>
+                        <div class="cardName">近一個月新增會員</div>
                     </div>
 
                     <div class="iconBx">
                         <ion-icon name="cash-outline"></ion-icon>
                     </div>
                 </div>
+
+                
+
+                
             </div>
 
             <!-- ================ Order Details List ================= -->

@@ -20,8 +20,10 @@ $resultHotellist = $conn->query($sqlHotellist);
 
 $row = $result->fetch_assoc();
 $rowsHotellist = $resultHotellist->fetch_All(MYSQLI_ASSOC);
-// var_dump($row);
-// exit;
+$nowsevenday = date("Y-m-d", strtotime("-1 month"));
+$sqlrecentHotel = "SELECT * FROM hotel_account WHERE created_at >= '$nowsevenday' ";
+$resultrecentHotel = $conn->query($sqlrecentHotel);
+$recentHotel = $resultrecentHotel->num_rows;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -169,49 +171,60 @@ $rowsHotellist = $resultHotellist->fetch_All(MYSQLI_ASSOC);
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">HOTEL數
+                        <div class="numbers"><?= $row["account"] ?></div>
+                        <div class="cardName">會員
 
                         </div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="person-circle-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">未定</div>
+                        <div class="numbers"><?= $row["address"] ?></div>
+                        <div class="cardName">地址</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                        <ion-icon name="compass-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers"></div>
-                        <div class="cardName">本月壽星</div>
+                        <div class="numbers">   
+                            <?php
+                            if ($row["area"] == 0) {
+                                echo "北";
+                            } else if ($row["area"] == 1) {
+                                echo "中";
+                            } else if ($row["area"] == 2) {
+                                echo "南";
+                            } ?>
+                        </div>
+                        <div class="cardName">地區</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <ion-icon name="locate-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers"></div>
-                        <div class="cardName">會員等級</div>
+                        <div class="numbers"><?= $row["start_date"] ?></div>
+                        <div class="cardName">開業日期</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
+                        <ion-icon name="today-outline"></ion-icon>
                     </div>
                 </div>
+
+
             </div>
 
             <!-- ================ Order Details List ================= -->
@@ -287,7 +300,7 @@ $rowsHotellist = $resultHotellist->fetch_All(MYSQLI_ASSOC);
                             <div class="products-summary">
                                 <h5 class="price">價格：
                                     <span>NT$<?= $product["price"] ?></span>
-                                </h5>   
+                                </h5>
                                 <a class="btn btn-danger" href="javascript:void(0)">查看</a>
                             </div>
                             <!-- <a class="btn btn-danger" href="javascript:void(0)">刪除</a> -->

@@ -1,3 +1,14 @@
+<?php
+require_once("../db-connect2.php");
+session_start();
+if (!isset($_SESSION["account"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

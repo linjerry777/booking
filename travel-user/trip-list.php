@@ -1,25 +1,48 @@
 <?php
-//需要session account name 作為上傳者
-require_once("../db-connect2.php");
 require_once('var_dump_pre.php');
+require_once("../../db-connect2.php");
+
+session_start();
+// var_dump_pre($_SESSION);
+if (!isset($_SESSION["account"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
+
+//設計sql 從session['email']得值取得account名
+$email = $_SESSION["email"];
+$sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email' AND valid=1";
+$result = $conn->query($sqlUserAccount);
+//設置userCount 看看帳號存不存在
+$userCount = $result->num_rows;
+$rows = $result->fetch_assoc();
+//設定按下刪除鍵的網址
+$_SESSION['del_location'] = $_SERVER['PHP_SELF'];
+// var_dump_pre($_SESSION['location']);
 
 
-// $sqlTrip = "SELECT * FROM trip_event";
-// $result = $conn->query($sqlTrip);
-// $rows = $result->fetch_all(MYSQLI_ASSOC);
+//將變數$account的值設為 account實際名稱
+$_SESSION['account'] = $rows['account'];
+$account = $_SESSION['account'];
 
-$sqlJoin = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 1 AND owner='$account";
-$resultJoin = $conn -> query($sqlJoin);
 
-// $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
+
+$sqlJoin = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 1 AND TE.owner='$account'";
+$resultJoin = $conn->query($sqlJoin);
 $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
-// $rowsNum = $resultJoin ->fetch_all(MYSQLI_NUM);
-// var_dump_pre($rowsNum);
-// mysql_data_seek($sql,0);
-// var_dump_pre($rowsJoin);
 
+$sqlJoinOld = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 0 AND TE.owner='$account'";
+$resultJoinOld = $conn->query($sqlJoinOld);
+$rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
 
+// var_dump_pre($account);
 // var_dump_pre($rowsJoin); 
+
+
+
+
+
+
 
 ?>
 
@@ -86,18 +109,8 @@ $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
                         <span class="title">產品一覽</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
-                        </span>
-                        <span class="title">公司資料修改</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
+                <a href="../doSignout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -120,94 +133,109 @@ $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
             </div>
             <!-- ================ DETAILS ================= -->
             <div class="details">
-            <?php foreach ($rowsJoin as $product) : ?>
-            <?php var_dump_pre($product["trip_name"]);?>
-            <?php $pictureArr = explode(',',$product['picture']); ?>
-            <?php $location = explode(',',($product['location']));?>
+                <div class="current-trips">
+                    <h2>上架中行程</h2>
+                    <?php foreach ($rowsJoin as $product) : ?>
+                        <!--把資料庫中的字串 用explode化為陣列-->
+                        <?php $pictureArr = explode(',', $product['picture']); ?>
+                        <?php $location = explode(',', ($product['location'])); ?>
                         <div class="products-items my-2">
                             <div class="titlecard">
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img class="titlecard-banner" src="./assets/imgs/<?=$pictureArr[0]?>" alt="">
+                                <img class="titlecard-banner" src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
-                                <div class="product-data">
-                                    <div class="price-date">
-                                        <p>價格：<?=$product['price']?></p>
-                                        <p>開始販賣日期：<?=$product['start_date']?></p>
-                                        <p>結束販賣日期：<?=$product['end_date']?></p>
-                                    </div>
-                                    <div class="guide-location">
-                                        <p>有無導遊：<?php if($product['guide']==1){echo '有';}else{echo '無';}?></p>
-                                        <p>地點：<?php 
-                                            for($i=0;$i<count($location);$i++){
-                                                switch ($location[$i]){
-                                                case 'northern':
-                                                echo '北部';
-                                                break;
-                                                case 'central' :
-                                                echo '中部';
-                                                break;
-                                                case 'southern':
-                                                echo '南部';
-                                                break;
-                                                case 'eastern':
-                                                echo '東部';
-                                                break;
-                                                case  'oversea';
-                                                echo '海外';
-                                            }}?>
-                                        </p>
-                                        <p>平均評價：5</p>
-                                    </div>
-                                    <div class="des">
-                                        <p>行程介紹：<?=$product['description']?></p>
-                                    </div>
-                                    <div class="imgs">
-                                        <p>目前上傳圖片：</p>
-                                        <?php for($i=0;$i<count($pictureArr);$i++): ?>
-                                        <img src="./assets//imgs/<?=$pictureArr[$i]?>" alt="">
-                                        <?php endfor; ?>
-                                    </div>
-                                    <div class="tags">
-                                        <?php $indoor_outdoor = explode(',',$product['indoor_outdoor'])?>
-                                        <?php $customTag = explode('/',$product['custom_tag'])?>
-                                        <?php foreach($product as $testKey => $testValue):?>
-                                            <?php if($testValue==1 && $testKey == "in_mountain"){
-                                                echo "<div class='tags'>登山踏青</div>";
-                                                }elseif($testValue==1 && $testKey == "in_water"){
-                                                echo "<div class='tags'>水上活動</div>";}
-                                                elseif($testValue==1 && $testKey == "snow"){
-                                                echo "<div class='tags'>雪上活動</div>";}
-                                                elseif($testValue==1 && $testKey == "natural_attraction"){
-                                                echo "<div class='tags'>大自然</div>";}
-                                                elseif($testValue==1 && $testKey == "culture_history"){
-                                                echo "<div class='tags'>歷史人文</div>";}
-                                                elseif($testValue==1 && $testKey == "workshop"){
-                                                echo "<div class='tags'>工作坊，課程體驗</div>";}
-                                                elseif($testValue==1 && $testKey == "amusement"){
-                                                echo "<div class='tags'>遊樂園，特殊節慶</div>";}
-                                                elseif($testValue==1 && $testKey == "meal"){
-                                                echo "<div class='tags'>供餐</div>";}
-                                                elseif($testValue==1 && $testKey == "no_shopping"){
-                                                echo "<div class='tags'>無購物行程</div>";}
-                                                elseif($testValue==1 && $testKey == "family-friendly"){
-                                                echo "<div class='tags'>適合全家出遊</div>";}
-                                                elseif($testValue==1 && $testKey == "pet"){
-                                                echo "<div class='tags'>寵物ok</div>";} ?>
-                                                <!--處理不同的indoor_outdoor-->
-                                                <?php if(in_array('0',$indoor_outdoor) && $testKey=="indoor_outdoor"){echo "<div class='tags'>室內活動為主</div>";}?>
-                                                <?php if(in_array('1',$indoor_outdoor) && $testKey=="indoor_outdoor"){echo "<div class='tags'>室外活動為主</div>";}?>
-                                                <?php if(in_array('2',$indoor_outdoor) && $testKey=="indoor_outdoor"){echo "<div class='tags'>室內室外活動比例平均</div>";}?>
-                                                <?php if($testKey=="custom_tag" && isset($customTag)){
-                                                    for($i=0;$i<count($customTag);$i++) {
-                                                        echo "<div class='tags'>".$customTag[$i]."</div>";
+                                <table class="product-data table table-bordered">
+                                    <tr class="price-date">
+                                        <td>價格：</td>
+                                        <td colspan="2"><?= $product['price'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>開始販賣日期：</td>
+                                        <td><?= $product['start_date'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>結束販賣日期：</td>
+                                        <td><?= $product['end_date'] ?></td>
+                                    </tr>
+                                    <tr class="guide">
+                                        <td>有無導遊：</td>
+                                        <td>
+                                            <?php if ($product['guide'] == 1) {
+                                                echo '有';
+                                            } else {
+                                                echo '無';
+                                            } ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="des">
+                                        <td>行程介紹：</td>
+                                        <td><?= $product['description'] ?></td>
+                                    </tr>
+                                    <tr class="star">
+                                        <td>平均評價：</td>
+                                        <td>5</td>
+                                    </tr>
+                                    <tr class="imgs">
+                                        <td>目前上傳圖片：</td>
+                                        <td>
+                                            <?php $realCount = array_filter($pictureArr);?>
+                                            <?php for ($i = 0; $i < count($realCount); $i++) : ?>
+                                                <img src="./assets//imgs/<?= $pictureArr[$i]?>" alt="<?= $pictureArr[$i]?>">
+                                            <?php endfor; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="tags">
+                                        <td>
+                                            標籤一覽：
+                                        </td>
+                                        <td>
+                                            <?php $indoor_outdoor = explode(',', $product['indoor_outdoor']) ?>
+                                            <?php $customTag = explode('/', $product['custom_tag']) ?>
+                                            <?php foreach ($product as $testKey => $testValue) : ?>
+                                                <?php if ($testValue == 1 && $testKey == "in_mountain") {
+                                                    echo "<div class='tags'>登山踏青</div>";
+                                                } elseif ($testValue == 1 && $testKey == "in_water") {
+                                                    echo "<div class='tags'>水上活動</div>";
+                                                } elseif ($testValue == 1 && $testKey == "snow") {
+                                                    echo "<div class='tags'>雪上活動</div>";
+                                                } elseif ($testValue == 1 && $testKey == "natural_attraction") {
+                                                    echo "<div class='tags'>大自然</div>";
+                                                } elseif ($testValue == 1 && $testKey == "culture_history") {
+                                                    echo "<div class='tags'>歷史人文</div>";
+                                                } elseif ($testValue == 1 && $testKey == "workshop") {
+                                                    echo "<div class='tags'>工作坊，課程體驗</div>";
+                                                } elseif ($testValue == 1 && $testKey == "amusement") {
+                                                    echo "<div class='tags'>遊樂園，特殊節慶</div>";
+                                                } elseif ($testValue == 1 && $testKey == "meal") {
+                                                    echo "<div class='tags'>供餐</div>";
+                                                } elseif ($testValue == 1 && $testKey == "no_shopping") {
+                                                    echo "<div class='tags'>無購物行程</div>";
+                                                } elseif ($testValue == 1 && $testKey == "family-friendly") {
+                                                    echo "<div class='tags'>適合全家出遊</div>";
+                                                } elseif ($testValue == 1 && $testKey == "pet") {
+                                                    echo "<div class='tags'>寵物ok</div>";
+                                                } ?>
+                                                <?php if (in_array('0', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室內活動為主</div>";
+                                                } ?>
+                                                <?php if (in_array('1', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室外活動為主</div>";
+                                                } ?>
+                                                <?php if (in_array('2', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室內室外活動比例平均</div>";
+                                                } ?>
+                                                <?php if ($testKey == "custom_tag" && isset($customTag)) {
+                                                    for ($i = 0; $i < count($customTag); $i++) {
+                                                        echo "<div class='tags'>" . $customTag[$i] . "</div>";
                                                     }
-                                                }?>       
-                                                <?php endforeach; ?>
-                                    </div>    
-                                </div>
+                                                } ?>
+                                            <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                </table>
                                 <div class="users-data">
                                     <div class="users-items">
                                         <div class="users-titlecard">
@@ -225,14 +253,139 @@ $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
                                     </div>
                                 </div>
                                 <div class="crudBtns">
-                                    <a class="Ubtn" href="trip-update.php?product=<?=$product["trip_name"]?>">修改</a>
-                                    <a class="Dbtn" href="do-delete.php?product=<?=$product["trip_name"]?>">下架</a>
+                                    <a role="button" class="btn text-bg-primary Ubtn" href="trip-update.php?product=<?= $product["trip_name"] ?>">修改</a>
+                                    <a role="button" class="btn text-bg-danger Dbtn" href="do-delete.php?product=<?= $product["trip_name"] ?>">下架</a>
                                 </div>
                             </div>
                             <!-- <a class="btn btn-danger" href="javascript:void(0)">刪除</a> -->
                         </div>
                     <?php endforeach; ?>
+                </div>
+                <div class="old-trips">
+                    <h2>已下架行程</h2>
+                    <?php foreach ($rowsJoinOld as $productOld) : ?>
+                        <?php $pictureArr = explode(',', $productOld['picture']); ?>
+                        <?php $location = explode(',', ($productOld['location'])); ?>
+                        <div class="products-items my-2">
+                            <div class="titlecard">
+                                <div class="products-control">
+                                    <h4><?= $productOld["trip_name"] ?></h4>
+                                </div>
+                                <img class="titlecard-banner" src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
+                            </div>
+                            <div class="products-summary">
+                                <table class="product-data table table-bordered">
+                                    <tr class="price-date">
+                                        <td>價格：</td>
+                                        <td colspan="2"><?= $productOld['price'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>開始販賣日期：</td>
+                                        <td><?= $productOld['start_date'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>結束販賣日期：</td>
+                                        <td><?= $productOld['end_date'] ?></td>
+                                    </tr>
+                                    <tr class="guide">
+                                        <td>有無導遊：</td>
+                                        <td>
+                                            <?php if ($productOld['guide'] == 1) {
+                                                echo '有';
+                                            } else {
+                                                echo '無';
+                                            } ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="des">
+                                        <td>行程介紹：</td>
+                                        <td><?= $productOld['description'] ?></td>
+                                    </tr>
+                                    <tr class="star">
+                                        <td>平均評價：</td>
+                                        <td>5</td>
+                                    </tr>
+                                    <tr class="imgs">
+                                        <td>目前上傳圖片：</td>
+                                        <td>
+                                            <?php for ($i = 0; $i < count($pictureArr); $i++) : ?>
+                                                <img src="./assets//imgs/<?= $pictureArr[$i]?>" alt="<?= $pictureArr[$i]?>">
+                                            <?php endfor; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="tags">
+                                        <td>
+                                            標籤一覽：
+                                        </td>
+                                        <td>
+                                            <?php $indoor_outdoor = explode(',', $productOld['indoor_outdoor']) ?>
+                                            <?php $customTag = explode('/', $productOld['custom_tag']) ?>
+                                            <?php foreach ($productOld as $testKey => $testValue) : ?>
+                                                <?php if ($testValue == 1 && $testKey == "in_mountain") {
+                                                    echo "<div class='tags'>登山踏青</div>";
+                                                } elseif ($testValue == 1 && $testKey == "in_water") {
+                                                    echo "<div class='tags'>水上活動</div>";
+                                                } elseif ($testValue == 1 && $testKey == "snow") {
+                                                    echo "<div class='tags'>雪上活動</div>";
+                                                } elseif ($testValue == 1 && $testKey == "natural_attraction") {
+                                                    echo "<div class='tags'>大自然</div>";
+                                                } elseif ($testValue == 1 && $testKey == "culture_history") {
+                                                    echo "<div class='tags'>歷史人文</div>";
+                                                } elseif ($testValue == 1 && $testKey == "workshop") {
+                                                    echo "<div class='tags'>工作坊，課程體驗</div>";
+                                                } elseif ($testValue == 1 && $testKey == "amusement") {
+                                                    echo "<div class='tags'>遊樂園，特殊節慶</div>";
+                                                } elseif ($testValue == 1 && $testKey == "meal") {
+                                                    echo "<div class='tags'>供餐</div>";
+                                                } elseif ($testValue == 1 && $testKey == "no_shopping") {
+                                                    echo "<div class='tags'>無購物行程</div>";
+                                                } elseif ($testValue == 1 && $testKey == "family-friendly") {
+                                                    echo "<div class='tags'>適合全家出遊</div>";
+                                                } elseif ($testValue == 1 && $testKey == "pet") {
+                                                    echo "<div class='tags'>寵物ok</div>";
+                                                } ?>
+                                                <?php if (in_array('0', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室內活動為主</div>";
+                                                } ?>
+                                                <?php if (in_array('1', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室外活動為主</div>";
+                                                } ?>
+                                                <?php if (in_array('2', $indoor_outdoor) && $testKey == "indoor_outdoor") {
+                                                    echo "<div class='tags'>室內室外活動比例平均</div>";
+                                                } ?>
+                                                <?php if ($testKey == "custom_tag" && isset($customTag)) {
+                                                    for ($i = 0; $i < count($customTag); $i++) {
+                                                        echo "<div class='tags'>" . $customTag[$i] . "</div>";
+                                                    }
+                                                } ?>
+                                            <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="users-data">
+                                    <div class="users-items">
+                                        <div class="users-titlecard">
+                                            <div class="users-control">
+                                                <h4>顧客名字</h4>
+                                            </div>
+                                            <img src="" alt="顧客照片">
+                                        </div>
+                                        <div class="users-comment">
+                                            <h5 class="comment">評語：很好玩</h5>
+                                            <h5 class="comment-star">評價：5</h5>
+                                        </div>
 
+                                        <div class="user-card-banner"></div>
+                                    </div>
+                                </div>
+                                <div class="crudBtns">
+                                    <a role="button" class="btn text-bg-danger Dbtn" href="do-delete-two.php?product=<?= $productOld["trip_name"] ?>">刪除</a>
+                                </div>
+                            </div>
+                            <!-- <a class="btn btn-danger" href="javascript:void(0)">刪除</a> -->
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     </div>

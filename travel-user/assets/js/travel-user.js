@@ -20,10 +20,10 @@ toggle.onclick = function () {
   main.classList.toggle("active");
 };
 
+//操縱行程卡片
+
 let titlecard = document.querySelectorAll(".titlecard");
 // let productSummary = document.querySelectorAll(".products-summary");
-
-
 
 for (i=0;i<titlecard.length;i++) {
   titlecard[i].addEventListener("click",function(){

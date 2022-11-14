@@ -228,35 +228,13 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                 <div class="card">
                     <div>
                         <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">HOTEL數
+                        <div class="cardName">HOTEL總數
 
                         </div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers"></div>
-                        <div class="cardName">平均年齡</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers"></div>
-                        <div class="cardName">男女比</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <ion-icon name="person-circle-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -274,7 +252,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
+                        <ion-icon name="time-outline"></ion-icon>
                     </div>
                 </div>
             </div>

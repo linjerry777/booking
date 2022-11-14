@@ -99,7 +99,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
             position: fixed;
             top:0;
             left: 0;
-            z-index: 1;
+            z-index: 999;
 
 
         }
@@ -124,7 +124,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                 </li>
 
                 <li>
-                    <a href="../home/admin.php">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -211,14 +211,14 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">Travel廠商成交額排行
+                        <div class="numbers"><?= $travelCount ?></div>
+                        <div class="cardName">已上架行程
 
                         </div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                    <ion-icon name="bag-add-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -237,11 +237,11 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                             echo $avgstars."★";
                             ?>
                         </div>
-                        <div class="cardName">評價(評論)星數</div>
+                        <div class="cardName">平均評價(評論)星數</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                    <ion-icon name="chatbubbles-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -419,35 +419,37 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                         <?php if ($travelCount > 0) : ?>
                                 <?php foreach ($rowsTripforOne as $row) : ?>
                                     <div class="modal" id="modal">
-                                        <dialog class="dialog" id="dialog">
-                                        <h2><?=$row["trip_name"]?></h2> 
-                                        <table class="table table-bordered">
-                                           <tr>
-                                            <td>id</td>
-                                            <td><?=$row["id"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>行程圖片</td>
-                                            <td><?=$row["picture"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>行程名稱</td>
-                                            <td><?=$row["trip_name"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>最大參團人數</td>
-                                            <td><?=$row["amount"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>金額</td>
-                                            <td><?=$row["price"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>注意事項</td>
-                                            <td><?=$row["description"]?></td>
-                                           </tr>
-                                        </table>
-                                        <button class="btn close" id="close">關閉</button>
+                                        <dialog class="dialog  justify-content-center text-center" id="dialog">
+                                            <h2><?=$row["trip_name"]?></h2> 
+                                            <table class="table table-bordered">
+                                            <tr>
+                                                <td>id</td>
+                                                <td><?=$row["id"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>行程圖片</td>
+                                                <td> <img src="./assets/imgs/<?=$row["picture"]?>" alt="<?=$row["picture"]?>"> </td>
+                                            </tr>
+                                            <tr>
+                                                <td>行程名稱</td>
+                                                <td><?=$row["trip_name"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>最大參團人數</td>
+                                                <td><?=$row["amount"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>金額</td>
+                                                <td><?=$row["price"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>注意事項</td>
+                                                <td><?=$row["description"]?></td>
+                                            </tr>
+                                            </table>
+                                            <div class="text-center">
+                                            <button class="btn close btn-danger" id="close">關閉</button>
+                                            </div>
                                         </dialog> 
                                     </div>
                                     <?php endforeach; ?>

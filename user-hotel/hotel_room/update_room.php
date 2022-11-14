@@ -1,14 +1,17 @@
 <?php
-
-require_once("../../db-connect2.php");
-
+require_once("../db-connect2.php");
 session_start();
+if (!isset($_SESSION["account"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
 $account = $_SESSION["account"];
 $roomType = $_GET['room'];
 
-$sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room='$roomType' AND VALID=1";
+
+$sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room='$roomType' AND hotel_room_list.valid=1 AND room_service_list.valid=1";
 $roomListResult = $conn->query($sqlRoomList);
-$roomListCount = $roomListResult->num_rows;
+//$roomListCount = $roomListResult->num_rows;
 $roomListrow = $roomListResult->fetch_assoc();
 //var_dump($roomListrow);
 ?>

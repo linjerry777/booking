@@ -2,28 +2,37 @@
 
 require_once('var_dump_pre.php');
 require_once("../../db-connect2.php");
+
 session_start();
-$account = $userAccountRow["account"];
-//$account = $_POST["account"];
-//$account = "tangej";/* ---自己的環境時 */
-$_SESSION["account"] = $account;/* ---自己的環境時 */
+
+//設計sql 從session['email']得值取得account名
+
+if (!isset($_SESSION["email"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
 $email = $_SESSION["email"];
-$sql = "SELECT * FROM travel_account WHERE email='$email' AND valid=1";
-$result = $conn->query($sql);
+$sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email' AND valid=1";
+$result = $conn->query($sqlUserAccount);
+//設置userCount 看看帳號存不存在
 $userCount = $result->num_rows;
+$rows = $result->fetch_assoc();
+//設定按下刪除鍵的網址
+$_SESSION['del_location'] = $_SERVER['PHP_SELF'];
+// var_dump_pre($_SESSION['location']);
 
-$row = $result->fetch_assoc();
-$sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email'";
-$userAccountResult = $conn->query($sqlUserAccount);
-$userAccountRow = $userAccountResult->fetch_assoc();
 
+//將變數$account的值設為 account實際名稱
+$_SESSION['account'] = $rows['account'];
+$account = $_SESSION['account'];
 
+// var_dump_pre($rows);
+
+//從資料庫找尋此公司擁有的行程
 $sqlTrip = "SELECT * FROM trip_event WHERE valid=1 AND owner='$account'";
 $result = $conn->query($sqlTrip);
-$rows = $result->fetch_all(MYSQLI_ASSOC);
-// var_dump_pre($pictureArr);
-// var_dump_pre($banner);
-// var_dump($rows);
+$trips = $result->fetch_all(MYSQLI_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,18 +125,8 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                         <span class="title">產品一覽</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
-                        </span>
-                        <span class="title">公司資料修改</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
+                <a href="../doSignout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -221,53 +220,50 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
             <!-- ================ Order Details List ================= -->
             <div class="details">
                 <div class="companyDetail">
-                <?php if ($userCount == 0) : ?>
+                    <h2 id="account">帳號資料</h2>
+                    <?php if ($userCount == 0) : ?>
                         使用者不存在
                     <?php else : ?>
                         <table class="table table-bordered ">
                             <tbody>
                                 <tr>
                                     <td colspan="2">
-                                        <img src="./assets/imgs/<?= $row["company_banner"] ?>" alt="<?= $row["company_banner"] ?>">
+                                        <img class="company-banner" src="./assets/imgs/<?= $rows["company_banner"] ?>" alt="<?= $rows["company_banner"] ?>">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>會員id</td>
-                                    <td><?= $row["id"] ?></td>
-                                </tr>
-                                <tr>
                                     <td>會員帳號</td>
-                                    <td><?= $row["account"] ?></td>
+                                    <td><?= $rows["account"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>會員密碼</td>
-                                    <td><?= $row["password"] ?></td>
+                                    <td><?= $rows["password"] ?></td>
                                 </tr>
 
 
                                 <tr>
                                     <td>負責人姓名</td>
-                                    <td><?= $row["name"] ?></td>
+                                    <td><?= $rows["name"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>公司名稱</td>
-                                    <td><?= $row["company_name"] ?></td>
+                                    <td><?= $rows["company_name"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>開業日期</td>
-                                    <td><?= $row["start_date"] ?></td>
+                                    <td><?= $rows["start_date"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>地區</td>
                                     <td>
                                         <?php
-                                        if ($row["area"] == 0) {
+                                        if ($rows["area"] == 0) {
                                             echo "北";
                                         }
-                                        if ($row["area"] == 1) {
+                                        if ($rows["area"] == 1) {
                                             echo "中";
                                         }
-                                        if ($row["area"] == 2) {
+                                        if ($rows["area"] == 2) {
                                             echo "南";
                                         }
                                         ?>
@@ -275,32 +271,32 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                                 </tr>
                                 <tr>
                                     <td>公司電話</td>
-                                    <td><?= $row["company_phone"] ?></td>
+                                    <td><?= $rows["company_phone"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>公司信箱</td>
-                                    <td><?= $row["email"] ?></td>
+                                    <td><?= $rows["email"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>銀行帳戶</td>
-                                    <td><?= $row["bank_account"] ?></td>
+                                    <td><?= $rows["bank_account"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>官網</td>
-                                    <td><?= $row["website"] ?></td>
+                                    <td><?= $rows["website"] ?></td>
                                 </tr>
                                 <tr>
                                     <td>公司簡介</td>
-                                    <td><?= $row["introduction"] ?></td>
+                                    <td><?= $rows["introduction"] ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Cretated At</td>
-                                    <td><?= $row["created_at"] ?></td>
+                                    <td>加入會員時間</td>
+                                    <td><?= $rows["created_at"] ?></td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="py-2">
-                            <a class="btn btn-info" href="admin-edit-travel-user.php?id=<?= $row["id"] ?>">編輯使用者</a>
+                            <a class="btn btn-info" href="travel-user-edit.php#account">編輯使用者</a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -308,16 +304,16 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                 <!-- ================= New Customers ================ -->
                 <div class="products">
                     <div class="cardHeader">
-                        <h2>行程規劃</h2>
+                        <h2>現有行程</h2>
                     </div>
-                    <?php foreach ($rows as $product) : ?>
-                        <?php $pictureArr = explode(',',$product['picture']); ?>
+                    <?php foreach ($trips as $product) : ?>
+                        <?php $pictureArr = explode(',', $product['picture']); ?>
                         <div class="products-items my-2">
                             <div class="titlecard">
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img src="./assets/imgs/<?=$pictureArr[0]?>" alt="">
+                                <img src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <h5 class="start-date">上架日：
@@ -329,7 +325,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                                 <h5 class="comment-star">評價：
                                     <span>5</span>
                                 </h5>
-                                <a class="bg-danger" href="do-delete.php?product=<?=$product["trip_name"]?>">刪除</a>
+                                <a class="bg-danger" href="do-delete.php?product=<?= $product["trip_name"] ?>">刪除</a>
                             </div>
                             <!-- <a class="btn btn-danger" href="javascript:void(0)">刪除</a> -->
                         </div>

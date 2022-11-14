@@ -106,8 +106,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
             position: fixed;
             top:0;
             left: 0;
-            z-index: 1;
-
+            z-index: 999;
 
         }
         .openModal{
@@ -131,7 +130,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                 </li>
 
                 <li>
-                    <a href="../home/admin.php">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -253,11 +252,11 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                             echo $avgstars."★";
                             ?>
                         </div>
-                        <div class="cardName">評價(評論)星數</div>
+                        <div class="cardName">平均評價(評論)星數</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                    <ion-icon name="chatbubbles-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -448,7 +447,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                         <td><?= $row["start_date"] ?></td>
                                         <td>
                                             <!-- <a class="btn btn-info" href="admin-travel-user.php?id=<?= $row["account_id"] ?>">查看詳情</a> -->
-                                            <button class="bg-danger trip_event_detil" id="trip_event_detil" >查看</button>
+                                            <button class="btn btn-danger trip_event_detil" id="trip_event_detil" >查看</button>
                                             <!-- <a class="btn btn-danger" href="admin-delete-travel-user.php?id=<?= $row["id"] ?>">刪除</a> -->
                                         </td>
                                     </tr>
@@ -489,8 +488,10 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                             <td><?=$row["description"]?></td>
                                            </tr>
                                         </table>
-                                        <button class="btn close" id="close">關閉</button>
-                                        </dialog> 
+                                        <div class="text-center">
+                                            <button class="btn close btn-danger" id="close">關閉</button>
+                                        </div>
+                                        </dialog>
                                     </div>
                                     <?php endforeach; ?>
                         <?php endif; ?>

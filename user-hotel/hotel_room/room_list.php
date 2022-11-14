@@ -4,26 +4,37 @@ use LDAP\Result;
 
 require_once("../../db-connect2.php");
 session_start();
-
+if (!isset($_SESSION["account"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
 //$account = $_POST["account"];
 $account = $_SESSION["account"];
-isset($_GET["pet"]) ? $pet = 1 : $pet = 0;
-isset($_GET["tv"]) ? $tv = 1 : $tv = 0;
-isset($_GET["tub"]) ? $tub = 1 : $tub = 0;
-isset($_GET["meal"]) ? $meal = 1 : $meal = 0;
-isset($_GET["mini-bar"]) ? $miniBar = 1 : $miniBar = 0;
-isset($_GET["window"]) ? $window = 1 : $window = 0;
-isset($_GET["corner"]) ? $corner = 1 : $corner = 0;
 
-//$sqlHotelAccount = "SELECT hotel_account.*, hotel.service_list ON  WHERE hotel_account.account='$account' AND hotel_account.valid=1";
-/* $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND valid=1";
-$roomListResult = $conn->query($sqlRoomList);
-$roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC); */
-//var_dump($roomListRows);
-$sqlOrderList = "SELECT total_order_list.*, total_order_list_detail.* FROM total_order_list JOIN total_order_list_detail ON total_order_list.product_id = total_order_list_detail.product_id WHERE total_order_list.company_id='tangej' AND total_order_list.valid=1";
+$petSelected = isset($_GET['pet']);
+$tvSelected = isset($_GET['tv']);
+$tubSelected = isset($_GET['tub']);
+$mealSelected = isset($_GET['meal']);
+$mini_barSelected = isset($_GET['mini_bar']);
+$windowSelected = isset($_GET['window']);
+$cornerSelected = isset($_GET['corner']);
+$serviceListTagGet = [];
+
+$serviceListTag = ["pet" => "$petSelected", "tv" => "$tvSelected", "tub" => "$tubSelected", "meal" => "$mealSelected", "mini_bar" => "$mini_barSelected", "window" => "$windowSelected", "corner" => "$cornerSelected"];
+//var_dump($serviceListTag);
+foreach ($serviceListTag as $serviceTag => $ifIsset) {
+    if ($ifIsset) {
+        array_push($serviceListTagGet, $serviceTag);
+    }
+}
+
+
+$sqlOrderList = "SELECT total_order_list.*, total_order_list_detail.* FROM total_order_list JOIN total_order_list_detail ON total_order_list.product_id = total_order_list_detail.product_id_detail WHERE total_order_list.company_id='$account' AND total_order_list.valid=1";
 $orderListResult = $conn->query($sqlOrderList);
 $orderListRows = $orderListResult->fetch_all(MYSQLI_ASSOC);
 //var_dump($orderListRows);
+
+
 if (isset($_GET["search"])) {
     $search = $_GET["search"];
     if (isset($_GET["page"])) {
@@ -33,34 +44,68 @@ if (isset($_GET["search"])) {
     }
     $per_page = 5;
     $page_start = ($page - 1) * $per_page;
-    $sqlRoomListLike = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room_name LIKE '%$search%' AND hotel_room_list.valid=1 OR pet LIKE $pet";
+    $sqlRoomListLike = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room_name LIKE '%$search%' AND hotel_room_list.valid=1 AND room_service_list.valid=1";
     $roomListLikeResult = $conn->query($sqlRoomListLike);
     //$roomListLikeRows = $roomListLikeResult->fetch_all(MYSQLI_ASSOC);
     //var_dump($roomListLikeRows);
     $roomCount = $roomListLikeResult->num_rows;
     $totalPage = ceil($roomCount / $per_page);
-    $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room_name LIKE '%$search%' AND hotel_room_list.valid=1 ORDER BY created_at DESC LIMIT $page_start, $per_page";
+    $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND room_name LIKE '%$search%' AND hotel_room_list.valid=1 AND room_service_list.valid=1 ORDER BY created_at DESC LIMIT $page_start, $per_page";
     $roomListResult = $conn->query($sqlRoomList);
     //var_dump($roomListResult);
+} else if (isset($_GET["pet"]) || isset($_GET["tv"]) || isset($_GET["tub"]) || isset($_GET["meal"]) || isset($_GET["mini_bar"]) || isset($_GET["window"]) || isset($_GET["corner"])) {
+    //$select = $_GET["select"];
+    if (isset($_GET["page"])) {
+        $page = $_GET["page"];
+    } else {
+        $page = 1;
+    }
+
+    $conditionAll = "room_service_list.";
+    foreach ($serviceListTagGet as $serviceTag) {
+        $conditionAll .= $serviceTag . "= 1 AND ";
+        //echo $conditionAll;
+    }
+    //echo $conditionAll;
+    $sqlRoomSelect = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND ";
+    $sqlValid = "hotel_room_list.valid=1 AND room_service_list.valid=1";
+    $sqlRoomSelect .= $conditionAll;
+    $sqlRoomSelect .= $sqlValid;
+    //$conditionAll = "room_service_list.$select=1";
+    //echo $condition;
+    //echo $sqlRoomSelect;
+    $sqlRoomSelectResult = $conn->query($sqlRoomSelect);
+    $per_page = 5;
+    $page_start = ($page - 1) * $per_page;
+    $roomCount = $sqlRoomSelectResult->num_rows;
+    $totalPage = ceil($roomCount / $per_page);
+
+
+    $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND ";
+    //echo $condition;
+    $sqlPage = "hotel_room_list.valid=1 AND room_service_list.valid=1 ORDER BY created_at DESC LIMIT $page_start, $per_page";
+    $sqlRoomList .= $conditionAll;
+    $sqlRoomList .= $sqlPage;
+    $roomListResult = $conn->query($sqlRoomList);
 } else {
     if (isset($_GET["page"])) {
         $page = $_GET["page"];
     } else {
         $page = 1;
     }
-    $sqlRoomListAll = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND hotel_room_list.valid=1";
+    $sqlRoomListAll = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND hotel_room_list.valid=1 AND room_service_list.valid=1";
     $sqlRoomListResultAll = $conn->query($sqlRoomListAll);
     $roomCount = $sqlRoomListResultAll->num_rows;
 
     $per_page = 5;
     $page_start = ($page - 1) * $per_page;
-    $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND hotel_room_list.valid=1 ORDER BY created_at DESC LIMIT $page_start, $per_page";
+    $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND hotel_room_list.valid=1 AND room_service_list.valid=1 ORDER BY created_at DESC LIMIT $page_start, $per_page";
     $roomListResult = $conn->query($sqlRoomList);
     $totalPage = ceil($roomCount / $per_page);
 }
 $roomListResult = $conn->query($sqlRoomList);
 $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
-
+/* var_dump($roomListRows); */
 
 
 
@@ -79,6 +124,8 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <link rel="stylesheet" href="./style-room-list.css">
     <link rel="stylesheet" href="../css/mycss.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
         .search label ion-icon {
             position: absolute;
@@ -257,47 +304,49 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                 <!-- ================= 房型列表 ================ -->
                 <div class="recentCustomers">
                     <div class="mb-2">
-                        <form action="room_list" method="get">
+                        <form action="room_list.php" method="get">
                             <label for="service" class="mb-2">房型服務</label>
-                            <div class="row">
+                            <button class="btn btn-info" type="submit">篩選</button>
+                            <a class="btn btn-danger" href="room_list.php">清除篩選</a>
+                            <div class=" row">
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="pet">
+                                    <input class="form-check-input" type="checkbox" value="pet" name="pet" <?php if (isset($_GET["pet"]) && $_GET["pet"] == "pet") echo "checked"; ?>>
                                     <label class="form-check-label" for="pet">
                                         寵物友善房
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="tv">
+                                    <input class="form-check-input" type="checkbox" value="tv" name="tv" <?php if (isset($_GET["tv"]) && $_GET["tv"] == "tv") echo "checked"; ?>>
                                     <label class="form-check-label" for="tv">
                                         電視房
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="tub">
+                                    <input class="form-check-input" type="checkbox" value="tub" name="tub" <?php if (isset($_GET["tub"]) && $_GET["tub"] == "tub") echo "checked"; ?>>
                                     <label class="form-check-label" for="tub">
                                         浴缸房
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="meal">
+                                    <input class="form-check-input" type="checkbox" value="meal" name="meal" <?php if (isset($_GET["meal"]) && $_GET["meal"] == "meal") echo "checked"; ?>>
                                     <label class="form-check-label" for="meal">
                                         供餐
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="mini-bar">
-                                    <label class="form-check-label" for="minibar">
-                                        mini-bar
+                                    <input class="form-check-input" type="checkbox" value="mini_bar" name="mini_bar" <?php if (isset($_GET["mini_bar"]) && $_GET["mini_bar"] == "mini_bar") echo "checked"; ?>>
+                                    <label class="form-check-label" for="mini_bar">
+                                        mini_bar
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="window">
+                                    <input class="form-check-input" type="checkbox" value="window" name="window" <?php if (isset($_GET["window"]) && $_GET["window"] == "window") echo "checked"; ?>>
                                     <label class="form-check-label" for="window">
                                         有窗戶
                                     </label>
                                 </div>
                                 <div class="form-check col-lg-4 col-md-6">
-                                    <input class="form-check-input" type="checkbox" value="1" name="coner">
+                                    <input class="form-check-input" type="checkbox" value="corner" name="corner" <?php if (isset($_GET["corner"]) && $_GET["corner"] == "corner") echo "checked"; ?>>
                                     <label class="form-check-label" for="coner">
                                         邊間
                                     </label>
@@ -328,7 +377,14 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                         <a class="btn btn-info roomView" href="./update_room.php?room=<?= $serviceOfRoom["room_name"] ?>">修改</a>
                         <a class="btn btn-danger" href="./doDelete_room.php?room=<?= $serviceOfRoom["room_name"] ?>">下架</a>
                     </div>
-                    <div class="position-absolute pointer arrow-btn"><i class="fa-solid fa-square-caret-down big-font-size arrow"></i></div>
+                    <div class="position-absolute pointer arrow-btn" style="font-size: 36px;">
+                        <div class="arrow-down">
+                            <ion-icon name="caret-down-circle-outline"></ion-icon>
+                        </div>
+                        <div class="d-none arrow-up">
+                            <ion-icon name="caret-up-circle-outline"></ion-icon>
+                        </div>
+                    </div>
                 </div>
                 <div class="row d-none room-details position-relative">
                     <div class="col-lg-4 col-md">
@@ -369,8 +425,8 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                                 <td>金額</td>
                             </thead>
                             <?php foreach ($orderListRows as $orderList) : ?>
-                                <?php if ($orderList["product_id"] === $serviceOfRoom["room"]) : ?>
-                                    <tbody>
+                                <tbody>
+                                    <?php if ($orderList["product_id"] === $serviceOfRoom["room"] && $orderList["user"] === $orderList["user_detail"]) : ?>
                                         <td><?= $serviceOfRoom["room"] ?></td>
                                         <td><?= $orderList["user"] ?></td>
                                         <td><?= $orderList["amount"] ?></td>
@@ -382,8 +438,8 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                                         <?php endif; ?>
                                         <td><?= $orderList["order_date"] ?></td>
                                         <td><?= $serviceOfRoom["price"] * $orderList["amount"] ?></td>
-                                    </tbody>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </tbody>
                             <?php endforeach; ?>
                         </table>
 
@@ -398,8 +454,16 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                         <?php endfor; ?>
                     </ul>
                 </nav>
-            <?php else : ?>
+            <?php elseif (isset($_GET["select"])) : ?>
                 <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+                            <li class="page-item <?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="room_list.php?page=<?= $i ?>&&select=<?= $_GET["select"] ?>"><?= $i ?></a></li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
+            <?php else : ?>
+                <nav aria-label=" Page navigation example">
                     <ul class="pagination">
                         <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
                             <li class="page-item <?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="room_list.php?page=<?= $i ?>&&search=<?= $_GET["search"] ?>"><?= $i ?></a></li>
@@ -419,15 +483,18 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
     <script>
         const arrowBtns = document.querySelectorAll(".arrow-btn");
         const roomDetails = document.querySelectorAll(".room-details");
-        const arrow = document.querySelectorAll(".arrow");
+        const arrowDown = document.querySelectorAll(".arrow-down");
+        const arrowUp = document.querySelectorAll(".arrow-up");
         for (let i = 0; i < arrowBtns.length; i++) {
             arrowBtns[i].addEventListener("click", function() {
                 if (!roomDetails[i].classList.contains("d-none")) {
                     roomDetails[i].classList = "row room-details d-none"
-                    arrow[i].classList = "fa-solid fa-square-caret-down big-font-size"
+                    arrowUp[i].classList = "arrow-up d-none"
+                    arrowDown[i].classList = "arrow-down"
                 } else {
                     roomDetails[i].classList = "row room-details"
-                    arrow[i].classList = "fa-solid fa-square-caret-up big-font-size"
+                    arrowUp[i].classList = "arrow-up"
+                    arrowDown[i].classList = "arrow-down d-none"
                 }
             })
         }
