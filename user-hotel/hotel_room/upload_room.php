@@ -234,8 +234,8 @@ if (!isset($_SESSION["account"])) {
                                 </label>
                             </div>
                             <div class="form-check col-lg-4 col-md-6">
-                                <input class="form-check-input" type="checkbox" value="1" name="coner">
-                                <label class="form-check-label" for="coner">
+                                <input class="form-check-input" type="checkbox" value="1" name="corner">
+                                <label class="form-check-label" for="corner">
                                     邊間
                                 </label>
                             </div>

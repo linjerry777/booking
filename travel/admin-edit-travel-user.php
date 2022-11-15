@@ -95,8 +95,8 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
             border-radius: 10px;
             background: #fefefe;
             box-shadow: 3px 3px 5px #3333;
-            padding: 5% 10%;
-            margin: 10% auto ;
+            padding: 5% 8%;
+            margin: 3% auto ;
         }
         .modal{
             height: 100%;
@@ -111,6 +111,11 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
         }
         .openModal{
             display: block;
+        }
+        .object-cover{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -331,16 +336,23 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">
-                                            <img src="./assets/imgs/<?= $row["company_banner"] ?>" alt="<?= $row["company_banner"] ?>">
+                                        <input type="hidden" class="form-control" value="<?= $row["email"] ?>" name="email">
+                                        <td>公司信箱</td>
+                                        <td>
+                                            <?=$row["email"]?>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
+                                        <td class="text-center p-0" colspan="2">
+                                            <img class="object-cover" src="./assets/imgs/<?= $row["company_banner"] ?>" alt="<?= $row["company_banner"] ?>">
+                                        </td>
+                                    </tr> -->
+                                    <!-- <tr>
                                         <td>上傳圖片</td>
                                         <td>
                                             <input type="file" class="form-control" name="company_banner">
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td>負責人姓名</td>
                                         <td>
@@ -381,12 +393,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                             <input type="text" class="form-control" value="<?= $row["company_phone"] ?>" name="company_phone">
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>公司信箱</td>
-                                        <td>
-                                            <input type="text" class="form-control" value="<?= $row["email"] ?>" name="email">
-                                        </td>
-                                    </tr>
+                                    
                                     <tr>
                                         <td>銀行帳戶</td>
                                         <td>
@@ -425,7 +432,6 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                         <table>
                             <thead>
                             <tr>
-                                <td>id</td>
                                 <td>Travel業者</td>
                                 <td>行程名稱</td>
                                 <td>價格</td>
@@ -440,8 +446,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                 
                                     <tr>
 
-                                        <td><?= $row["id"] ?></td>
-                                        <td><?= $row["owner"] ?></td>
+                                    <td><?= $row["owner"] ?></td>
                                         <td><?= $row["trip_name"] ?></td>
                                         <td><?= $row["price"] ?></td>
                                         <td><?= $row["start_date"] ?></td>
@@ -463,30 +468,79 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                                         <dialog class="dialog" id="dialog">
                                         <h2><?=$row["trip_name"]?></h2> 
                                         <table class="table table-bordered">
-                                           <tr>
-                                            <td>id</td>
-                                            <td><?=$row["id"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>行程圖片</td>
-                                            <td><?=$row["picture"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>行程名稱</td>
-                                            <td><?=$row["trip_name"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>最大參團人數</td>
-                                            <td><?=$row["amount"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>金額</td>
-                                            <td><?=$row["price"]?></td>
-                                           </tr>
-                                           <tr>
-                                            <td>注意事項</td>
-                                            <td><?=$row["description"]?></td>
-                                           </tr>
+                                            <!-- <tr>
+                                                <td class="text-center p-0" colspan="4">
+                                                    <img class="object-cover" src="./assets/imgs/<?=$row["picture"]?>" alt="<?=$row["picture"]?>">
+                                                </td>
+                                            </tr> -->
+                                            <tr>
+                                                <td>金額</td>
+                                                <td colspan="3">$<?=$row["price"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>開團日</td>
+                                                <td><?=$row["start_date"]?></td>
+                                                <td>截團日</td>
+                                                <td><?=$row["end_date"]?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>服務tag</td>
+                                                <td colspan="3">
+                                                <?php
+                                                    $trip_name=$row["trip_name"];
+                                                    $sqlTripforService = "SELECT trip_service_list.*,trip_event.trip_name,trip_event.id AS event_id,travel_account.account,travel_account.id AS account_id FROM trip_service_list JOIN trip_event ON trip_service_list.trip=trip_event.trip_name JOIN travel_account ON trip_event.owner=travel_account.account WHERE travel_account.id='$id' AND  trip_event.valid=1 AND trip_service_list.trip='$trip_name' ORDER BY trip_event.created_at DESC ";
+                                                    $resultTripforService = $conn->query($sqlTripforService);
+                                                    $rowsTripforService = $resultTripforService->fetch_All(MYSQLI_ASSOC);
+                                                    ?>
+                                                    <?php foreach($rowsTripforService as $service):?>
+                                                        <?php
+                                                            if($service["mountain"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>登山活動</span>";
+                                                            }
+                                                            if($service["in_water"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>水上活動</span>";
+                                                            }
+                                                            if($service["snow"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>雪上活動</span>";
+                                                            }
+                                                            if($service["culture_history"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>文化歷史</span>";
+                                                            }
+                                                            if($service["workshop"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>工作坊</span>";
+                                                            }
+                                                            if($service["amusement"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>遊樂園</span>";
+                                                            }
+                                                            if($service["meal"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>包餐</span>";
+                                                            }
+                                                            if($service["no_shopping"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>購物行程</span>";
+                                                            }
+                                                            if($service["family_friendly"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>家庭活動</span>";
+                                                            }
+                                                            if($service["pet"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>寵物</span>";
+                                                            }
+                                                            if($service["indoor_outdoor"]==0){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>室內</span>";
+                                                            }else if($service["indoor_outdoor"]==1){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>室外</span>";
+                                                            }else if($service["indoor_outdoor"]==2){
+                                                                echo "<span class='badge rounded-pill text-bg-secondary'>室內外皆有</span>";
+                                                            }else{
+
+                                                            }
+                                                            ?>
+                                                    <?php endforeach;?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>行程介紹</td>
+                                                <td colspan="3"><?=$row["description"]?></td>
+                                            </tr>
                                         </table>
                                         <div class="text-center">
                                             <button class="btn close btn-danger" id="close">關閉</button>

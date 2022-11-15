@@ -26,8 +26,7 @@ $sqlAccount = "SELECT * FROM users WHERE  email='$email'";
 $result = $conn->query($sqlAccount);
 $userCount = $result->num_rows;
 if ($userCount > 0) {
-    echo "該帳號及信箱已經存在";
-    exit;
+    header("location: admin-user-product.php?account=" . $account);
 }
 
 $sql = "UPDATE users SET name='$name', phone='$phone', email='$email' ,identification='$identification', birthday='$birthday',gender='$gender' WHERE id='$id'";

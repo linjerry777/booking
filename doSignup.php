@@ -53,7 +53,7 @@ VALUES ('$account','$email','$password','$now','$valid')";
         echo "新增資料錯誤: " . $conn->error;
     }
     $conn->close();
-    header("location: admin-user/admin.php");
+    header("location: index.php");
 } else if ($accessRight == 2) {
     $sql = "SELECT * FROM hotel_account WHERE account='$account' OR email='$email'";
     $result = $conn->query($sql);

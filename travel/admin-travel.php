@@ -109,6 +109,7 @@ if (isset($_GET["search"])) {
     
 }
 
+
 $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
 
 $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
@@ -191,7 +192,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../home/admin.php">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -309,10 +310,10 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <div class="card">
+                <!-- <div class="card">
                     <div>
                         <div class="numbers">284</div>
-                        <div class="cardName">Travel總成交量</div>
+                        <div class="cardName">Travel總成交訂單</div>
                     </div>
 
                     <div class="iconBx">
@@ -329,7 +330,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     <div class="iconBx">
                         <ion-icon name="cash-outline"></ion-icon>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- ================ Order Details List ================= -->
@@ -372,22 +373,22 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     <table>
                         <thead>
                             <tr>
-                                <td>id</td>
-                                <td>帳戶</td>
                                 <td>公司名稱</td>
+                                <td>帳戶</td>
+                                <td>負責人</td>
                                 <td>電話</td>
                                 <td>信箱</td>
                                 <td>操作</td>
                             </tr>
                         </thead>
                         <?php if ($userCount > 0) : ?>
-                            <tbody>
+                            <tbody style="height:290px;">
                                 <?php foreach ($rows as $row) : ?>
-                                    <tr>
+                                    <tr >
 
-                                        <td><?= $row["id"] ?></td>
+                                        <td><?=$row["company_name"]  ?></td>
                                         <td><?= $row["account"] ?></td>
-                                        <td><?= $row["company_name"] ?></td>
+                                        <td><?= $row["name"] ?></td>
                                         <td><?= $row["company_phone"] ?></td>
                                         <td><?= $row["email"] ?></td>
                                         <td>
@@ -395,64 +396,15 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                                             <a class="btn btn-danger" href="admin-delete-travel-user.php?id=<?= $row["id"] ?>">刪除</a>
                                         </td>
                                     </tr>
-
-                                    <!--  <tr>
-                                        <td>Star Refrigerator</td>
-                                        <td>$1200</td>
-                                        <td>Paid</td>
-                                        <td><span class="status delivered">Delivered</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Dell Laptop</td>
-                                        <td>$110</td>
-                                        <td>Due</td>
-                                        <td><span class="status pending">Pending</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Apple Watch</td>
-                                        <td>$1200</td>
-                                        <td>Paid</td>
-                                        <td><span class="status return">Return</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Addidas Shoes</td>
-                                        <td>$620</td>
-                                        <td>Due</td>
-                                        <td><span class="status inProgress">In Progress</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Star Refrigerator</td>
-                                        <td>$1200</td>
-                                        <td>Paid</td>
-                                        <td><span class="status delivered">Delivered</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Dell Laptop</td>
-                                        <td>$110</td>
-                                        <td>Due</td>
-                                        <td><span class="status pending">Pending</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Apple Watch</td>
-                                        <td>$1200</td>
-                                        <td>Paid</td>
-                                        <td><span class="status return">Return</span></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Addidas Shoes</td>
-                                        <td>$620</td>
-                                        <td>Due</td>
-                                        <td><span class="status inProgress">In Progress</span></td>
-                                    </tr> -->
                                 <?php endforeach; ?>
                             </tbody>
+                            <?php else:?>
+                                <tbody style="height:290px;">
+                                    <tr>
+                                        <td class="text-center" colspan="6">無合作業者</td>
+                                    
+                                    </tr>
+                                </tbody>
                         <?php endif; ?>
                     </table>
                     <?php if (isset($_GET["search"])) : ?>
@@ -480,10 +432,10 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                         <h2>最新上架行程清單</h2>
                     </div>
                                     <!-- 目前無上架行程 -->
-                    <table>
+                    <table class="">
                         <thead>
                             <tr>
-                                <td>id</td>
+                                
                                 <td>Travel業者</td>
                                 <td>行程名稱</td>
                                 <td>價格</td>
@@ -493,11 +445,11 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                             </tr>
                         </thead>
                         <?php if ($travelCount > 0) : ?>
-                            <tbody>
+                            <tbody style="height:290px;">
                                 <?php foreach ($rowsTravel as $row) : ?>
                                     <tr>
 
-                                        <td><?= $row["id"] ?></td>
+                                        
                                         <td><?= $row["owner"] ?></td>
                                         <td><?= $row["trip_name"] ?></td>
                                         <td><?= $row["price"] ?></td>
@@ -509,7 +461,13 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
-                            
+                            <?php else:?>
+                                <tbody style="height:290px;">
+                                    <tr>
+                                        <td class="text-center" colspan="6">無上架行程</td>
+                                    
+                                    </tr>
+                                </tbody>
                         <?php endif; ?>
                     </table>
                     <?php if (isset($_GET["search"])) : ?>

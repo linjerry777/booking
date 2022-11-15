@@ -8,6 +8,7 @@ if (!isset($_SESSION["account"])) {
     echo "請循正常管道進入本頁";
     exit;
 }
+
 //設計sql 從session['email']得值取得account名
 $email = $_SESSION["email"];
 $sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email' AND valid=1";
@@ -15,7 +16,7 @@ $result = $conn->query($sqlUserAccount);
 //設置userCount 看看帳號存不存在
 $userCount = $result->num_rows;
 $rows = $result->fetch_assoc();
-
+ 
 
 //將變數$account的值設為 account實際名稱
 $_SESSION['account'] = $rows['account'];
@@ -223,12 +224,12 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                         <form action="travel-user-doEdit.php" method="post" enctype="multipart/form-data">
                             <table class="table table-bordered">
                                 <tbody>
-                                    <!-- <tr>
+                                    <tr>
                                     <tr>
                                         <td colspan="2">
                                             <img class="company-banner" src="./assets/imgs/<?= $rows["company_banner"] ?>" alt="<?= $rows["company_banner"] ?>">
                                         </td>
-                                        插入id
+                                        <!--插入id-->
                                         <input type="hidden" name="id" value="<?= $rows["id"] ?>">
                                     </tr>
                                     <tr>
@@ -236,14 +237,10 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                         <td>
                                             <input type="file" class="form-control" name="company_banner">
                                         </td>
-                                    </tr> -->
-                                    <tr>
-                                        <input type="hidden" name="id" value="<?= $rows["id"] ?>">
                                     </tr>
                                     <td>會員帳號</td>
                                     <td>
-                                        <?= $rows["account"] ?>
-                                        <input type="hidden" name="account" value="<?= $rows["account"] ?>">
+                                        <input type="text" name="account" disabled value="<?= $rows["account"] ?>">
                                     </td>
                                     </tr>
                                     <tr>
@@ -267,7 +264,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                     <tr>
                                         <td>開業日期</td>
                                         <td>
-                                            <input type="date" class="form-control" value="<?= $rows["start_date"] ?>" name="start_date">
+                                            <input type="date"  class="form-control" value="<?= $rows["start_date"] ?>" name="start_date">
                                         </td>
                                     </tr>
                                     <tr>

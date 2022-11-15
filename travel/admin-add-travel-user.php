@@ -9,6 +9,9 @@ if (isset($_GET["search"])) {
     $sqlTravel = "SELECT * FROM trip_event WHERE valid=1 ORDER BY created_at DESC LIMIT  $per_page ";
     $resultTravel = $conn->query($sqlTravel);
     $travelCount=$resultTravel->num_rows;
+    $sqlTripComment = "SELECT trip_comment.*,trip_event.owner,trip_event.id,travel_account.account,travel_account.id FROM trip_comment JOIN trip_event ON trip_event.id=trip_comment.trip JOIN travel_account ON trip_event.owner=travel_account.account  WHERE trip_comment.valid=1 ORDER BY created_at";
+    $resultTripComment = $conn->query($sqlTripComment);
+    $tripCommentCount = $resultTripComment->num_rows;
 } else {
     if (isset($_GET["userPage"])) {
         $userPage = $_GET["userPage"];
@@ -39,11 +42,17 @@ if (isset($_GET["search"])) {
     $resultTravel = $conn->query($sqlTravel);
     $totalTravelPage = ceil($travelCount /$per_page);
 
+    $sqlTripComment = "SELECT trip_comment.*,trip_event.owner,trip_event.id,travel_account.account,travel_account.id FROM trip_comment JOIN trip_event ON trip_event.id=trip_comment.trip JOIN travel_account ON trip_event.owner=travel_account.account  WHERE trip_comment.valid=1 ORDER BY created_at";
+    $resultTripComment = $conn->query($sqlTripComment);
+    $tripCommentCount = $resultTripComment->num_rows;
 }
 
 
 // $rows = $result->fetch_all(MYSQLI_ASSOC);
+$rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
+
 $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
+
 
 // $rows2=$result->fetch_all(MYSQLI_NUM);
 
@@ -188,15 +197,14 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
-                <div class="search">
+                <!-- <div class="search">
                     <form action="admin.php" method="get">
                         <label>
                             <input type="text" placeholder="Search here" class="form-control" name="search">
                             <ion-icon name="search-outline"></ion-icon>
-                            <!-- <button type="submit" class="btn btn-info">搜尋</button> -->
-                        </label>
+                            <button type="submit" class="btn btn-info">搜尋</button>
                     </form>
-                </div>
+                </div> -->
                 <!-- <?php if (isset($_GET["search"])) : ?>
                     <div class="py-2">
                         <a class="btn btn-info" href="admin.php">回使用者列表</a>
@@ -214,7 +222,7 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                 <div class="card">
                     <div>
                         <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">Travel人數
+                        <div class="cardName">Travel廠商人數
 
                         </div>
                     </div>
@@ -226,8 +234,19 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">廠商人數</div>
+                        <div class="numbers"><?=$tripCommentCount?></div>
+                        <div class="cardName">Travel總評論數</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <!-- <div class="card">
+                    <div>
+                        <div class="numbers">284</div>
+                        <div class="cardName">Travel總成交訂單</div>
                     </div>
 
                     <div class="iconBx">
@@ -237,25 +256,14 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
 
                 <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">產品數量</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
                         <div class="numbers">$7,842</div>
-                        <div class="cardName">營利</div>
+                        <div class="cardName">Travel總成交額</div>
                     </div>
 
                     <div class="iconBx">
                         <ion-icon name="cash-outline"></ion-icon>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- ================ Order Details List ================= -->
@@ -279,10 +287,10 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                         </div>
-                        <div class="mb-2">
+                        <!-- <div class="mb-2">
                             <label for="company_banner">上傳圖片</label>
                             <input type="file" class="form-control" id="company_banner" name="company_banner" required>
-                        </div>
+                        </div> -->
 
                         <div class="mb-2">
                             <label for="name">負責人姓名</label>

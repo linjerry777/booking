@@ -326,27 +326,34 @@ $row = $result->fetch_assoc();
                             <tr>
                                 <!-- <td>id</td> -->
                                 <td>帳戶</td>
-                                <td>姓名</td>
-                                <td>電話</td>
+                                <td>公司名稱</td>
                                 <td>商品</td>
-                                <td>操作</td>
+                                <td>是否付款</td>
+
+                                <!-- <td>操作</td> -->
                             </tr>
                         </thead>
                         <?php if ($userCount > 0) : ?>
                             <tbody>
                                 <?php foreach ($product as $row) : ?>
- 
+
                                     <tr class="pg1">
 
                                         <td><?= $row["user"] ?></td>
                                         <td><?= $row["company_id"] ?></td>
                                         <td><?= $row["product_id"] ?></td>
-                                        <td><?= $row["status"] ?></td>
+                                        <td> <?php
+                                                if ($row["status"] == 0) {
+                                                    echo "是";
+                                                } else if ($row["status"] == 1) {
+                                                    echo "否";
+                                                }
+                                                ?></td>
 
-                                        <td>
+                                        <!--  <td>
                                             <a class="show btn btn-info" href="admin-user-product.php?account=<?= $row["account"] ?>">檢視</a>
-                                            <!-- <a class="btn btn-danger" href="admin-delete-user.php?id=<?= $row["id"] ?>">刪除</a> -->
-                                        </td>
+                                            <a class="btn btn-danger" href="admin-delete-user.php?id=<?= $row["id"] ?>">刪除</a>
+                                        </td> -->
                                     </tr>
 
 
@@ -382,7 +389,9 @@ $row = $result->fetch_assoc();
         </div>
     </div>
     <script>
-        const show = document.querySelectorAll(".show"),pg1 = document.querySelector(".pg1"),pg2 = document.querySelector(".pg2");
+        const show = document.querySelectorAll(".show"),
+            pg1 = document.querySelector(".pg1"),
+            pg2 = document.querySelector(".pg2");
         for (let i = 0; i < show.length; i++) {
             show[i].addEventListener("click", function() {
                 pg2.classList.remove("d-none");

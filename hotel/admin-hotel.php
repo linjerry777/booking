@@ -16,14 +16,16 @@ $userCount = $result->num_rows;
 
 $sqlHotellist = "SELECT hotel_room_list.*,hotel_account.account FROM hotel_room_list JOIN hotel_account ON hotel_room_list.owner=hotel_account.account WHERE hotel_account.id='$id' AND  hotel_room_list.valid=1 ORDER BY created_at DESC";
 $resultHotellist = $conn->query($sqlHotellist);
-//$totalTravelPage = ceil($travelCount /$per_page);
+
 
 $row = $result->fetch_assoc();
 $rowsHotellist = $resultHotellist->fetch_All(MYSQLI_ASSOC);
 $nowsevenday = date("Y-m-d", strtotime("-1 month"));
-$sqlrecentHotel = "SELECT * FROM hotel_account WHERE created_at >= '$nowsevenday' ";
+$sqlrecentHotel = "SELECT * FROM hotel_account WHERE created_at >= '$nowsevenday'";
 $resultrecentHotel = $conn->query($sqlrecentHotel);
 $recentHotel = $resultrecentHotel->num_rows;
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,7 +197,7 @@ $recentHotel = $resultrecentHotel->num_rows;
 
                 <div class="card">
                     <div>
-                        <div class="numbers">   
+                        <div class="numbers">
                             <?php
                             if ($row["area"] == 0) {
                                 echo "北";
@@ -295,13 +297,12 @@ $recentHotel = $resultrecentHotel->num_rows;
                                 <div class="products-control">
                                     <h4><?= $product["room_name"] ?></h4>
                                 </div>
-                                <img src="<?= $product["picture"] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <h5 class="price">價格：
                                     <span>NT$<?= $product["price"] ?></span>
                                 </h5>
-                                <a class="btn btn-danger" href="javascript:void(0)">查看</a>
+                                <!-- <a class="btn btn-danger" href="javascript:void(0)">查看</a> -->
                             </div>
                             <!-- <a class="btn btn-danger" href="javascript:void(0)">刪除</a> -->
                         </div>

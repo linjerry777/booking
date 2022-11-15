@@ -37,8 +37,9 @@ $now = date('Y-m-d H:i:s');
 $sql = "INSERT INTO users (account,password,name ,phone, email,identification, birthday,gender,created_at,valid)
 VALUES ('$account','$password','$name', '$phone', '$email','$identification','$birthday','$gender', '$now',1)";
 
-$result = $conn->query($sql);
-$userCount = $result->num_rows;
+/* $resultuser = $conn->query($sql);
+$userCount = $resultuser->num_rows; */
+
 
 if ($conn->query($sql) === TRUE) {
     $last_id = $conn->insert_id;
@@ -49,4 +50,4 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->close();
 
-// header("location: admin.php");
+header("location: admin.php");

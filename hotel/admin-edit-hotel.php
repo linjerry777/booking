@@ -276,14 +276,16 @@ $row = $result->fetch_assoc();
                                     </tr>
                                     <tr>
                                         <td>帳戶</td>
-                                        <td>
-                                            <input type="text" class="form-control" value="<?= $row["account"] ?>" name="account">
+                                        <td class="text-start">
+                                            <?= $row["account"] ?>
+                                            <input type="hidden" class="form-control" value="<?= $row["account"] ?>" name="account">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>密碼</td>
-                                        <td>
-                                            <input type="password" class="form-control" value="<?= $row["password"] ?>" name="password">
+                                        <td class="text-start">
+                                            <?= $row["password"] ?>
+                                            <input type="hidden" class="form-control" value="<?= $row["password"] ?>" name="password">
                                         </td>
                                     </tr>
                                     <tr>
@@ -340,8 +342,9 @@ $row = $result->fetch_assoc();
                                     </tr>
                                     <tr>
                                         <td>信箱</td>
-                                        <td>
-                                            <input type="text" class="form-control" value="<?= $row["email"] ?>" name="email">
+                                        <td class="text-start">
+                                            <?= $row["email"] ?>
+                                            <input type="hidden" class="form-control" value="<?= $row["email"] ?>" name="email">
                                         </td>
                                     </tr>
                                     <tr>

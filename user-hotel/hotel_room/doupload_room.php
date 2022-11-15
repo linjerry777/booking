@@ -40,8 +40,8 @@ if ($_FILES["picture"]["error"] == 0) {
         $now = date('Y-m-d H:i:s');
         $sqlRoomList = "INSERT INTO hotel_room_list (owner, room_name, price, amount, picture, description, created_at, valid)
         VALUES ('$account', '$roomType', $price ,$amount, '$picture', '$description', '$now', '1')";
-        $sqlRoomService = "INSERT INTO room_service_list (room, pet, tv, tub, meal, mini_barr, window, corner, valid)
-        VALUES ('$roomType', '$pet', '$tv', '$tub', '$meal', '$mini_bar', '$window', '$coner', '1')";
+        $sqlRoomService = "INSERT INTO room_service_list (room, pet, tv, tub, meal, mini_bar, window, corner, valid)
+        VALUES ('$roomType', '$pet', '$tv', '$tub', '$meal', '$mini_bar', '$window', '$corner', '1')";
         if ($conn->query($sqlRoomList) && $conn->query($sqlRoomService) === TRUE) {
             $last_id = $conn->insert_id;
             /* echo "新資料輸入成功, id: $last_id"; */

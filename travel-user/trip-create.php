@@ -10,6 +10,7 @@ if (!isset($_SESSION["account"])) {
 }
 $account = $_SESSION['account'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -135,7 +136,7 @@ $account = $_SESSION['account'];
                             <input class="form-check-input" type="radio" name="guide" id="guide" value="1">
                             <label class="form-check-label" for="guide">導遊帶隊</label>
                         </fieldset>
-                        <!-- <fieldset class="location">
+                        <fieldset class="location">
                             <legend>行程地點<span>*</span></legend>
                             <label class="form-check-label" for="northern">北部</label>
                             <input class="form-check-input groupLocation" type="checkbox" id="northern" name="location[]" value="northern">
@@ -147,10 +148,11 @@ $account = $_SESSION['account'];
                             <input class="form-check-input groupLocation" type="checkbox" id="eastern" name="location[]" value="eastern">
                             <label class="form-check-label" for="oversea">海外</label>
                             <input class="form-check-input groupLocation" type="checkbox" id="oversea" name="location[]" value="oversea">
-                        </fieldset> -->
+                        </fieldset>
+
                         <fieldset class="picture">
                             <legend>宣傳照上傳<span>*</span></legend>
-                            <input class="form-control" type="file" name="picture[]" id="picture"  required>
+                            <input class="form-control" type="file" name="picture[]" id="picture" multiple required>
                         </fieldset>
                         <fieldset class="description">
                             <legend>行程介紹文案<span>*</span></legend>
@@ -201,7 +203,7 @@ $account = $_SESSION['account'];
                             <input class="form-check-input groupTag" type="checkbox" name="pet" id="pet" value="1">
                         </div>
                     </fieldset>
-                    <!-- <fieldset class="indoor-outdoor">
+                    <fieldset class="indoor-outdoor">
                         <legend>室內室外<span>*</span></legend>
                         <div class="checkboxes">
                             <label class="form-check-label" for="indoor">室內</label>
@@ -211,7 +213,7 @@ $account = $_SESSION['account'];
                             <label class="form-check-label" for="both">都有</label>
                             <input class="form-check-input indoorTag" type="checkbox" name="indoor_outdoor[]" id="both" value="2">
                         </div>
-                    </fieldset> -->
+                    </fieldset>
                     <fieldset class="custom-tag">
                         <legend>自定義屬性<small class="h6">※選填</small></legend>
                         <p>顯示在介紹文中、可用於關鍵字搜尋<small>※最多五個，以半形斜線(/)隔開</small></p>
@@ -229,7 +231,6 @@ $account = $_SESSION['account'];
     <!-- =========== Scripts =========  -->
     <script src="assets/js/travel-user.js"></script>
     <script src="assets/js/validation.js"></script>
-    <script src="assets/js/setting-form.js"></script>
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

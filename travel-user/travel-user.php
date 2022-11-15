@@ -7,10 +7,6 @@ session_start();
 
 //設計sql 從session['email']得值取得account名
 
-if (!isset($_SESSION["email"])) {
-    echo "請循正常管道進入本頁";
-    exit;
-}
 $email = $_SESSION["email"];
 $sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email' AND valid=1";
 $result = $conn->query($sqlUserAccount);
@@ -25,9 +21,16 @@ $_SESSION['del_location'] = $_SERVER['PHP_SELF'];
 //將變數$account的值設為 account實際名稱
 $_SESSION['account'] = $rows['account'];
 $account = $_SESSION['account'];
-
 // var_dump_pre($rows);
 
+if (!isset($_SESSION["email"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
+if (!isset($_SESSION["email"])) {
+    echo "請循正常管道進入本頁";
+    exit;
+}
 //從資料庫找尋此公司擁有的行程
 $sqlTrip = "SELECT * FROM trip_event WHERE valid=1 AND owner='$account'";
 $result = $conn->query($sqlTrip);
@@ -126,7 +129,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                     </a>
                 </li>
                 <li>
-                <a href="../doSignout.php">
+                    <a href="../doSignout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -228,7 +231,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                             <tbody>
                                 <tr>
                                     <td colspan="2">
-                                        <img class="company-banner" src="./assets/imgs/<?= $rows["company_banner"] ?>" alt="<?= $rows["company_banner"] ?>">
+                                        <img class="company-banner" src="./assets/imgs/<?=$account?>/<?= $rows["company_banner"] ?>" alt="<?= $rows["company_banner"] ?>">
                                     </td>
                                 </tr>
                                 <tr>
@@ -313,7 +316,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
+                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <h5 class="start-date">上架日：

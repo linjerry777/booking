@@ -9,6 +9,7 @@ if (!isset($_SESSION["account"])) {
     exit;
 }
 
+
 //設計sql 從session['email']得值取得account名
 $email = $_SESSION["email"];
 $sqlUserAccount = "SELECT * FROM travel_account WHERE travel_account.email='$email' AND valid=1";
@@ -24,7 +25,6 @@ $_SESSION['del_location'] = $_SERVER['PHP_SELF'];
 //將變數$account的值設為 account實際名稱
 $_SESSION['account'] = $rows['account'];
 $account = $_SESSION['account'];
-
 
 
 $sqlJoin = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 1 AND TE.owner='$account'";
@@ -110,7 +110,7 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                     </a>
                 </li>
                 <li>
-                <a href="../doSignout.php">
+                    <a href="../doSignout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -139,12 +139,13 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                         <!--把資料庫中的字串 用explode化為陣列-->
                         <?php $pictureArr = explode(',', $product['picture']); ?>
                         <?php $location = explode(',', ($product['location'])); ?>
+                        <?php $realCount = array_filter($pictureArr);?>
                         <div class="products-items my-2">
                             <div class="titlecard">
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img class="titlecard-banner" src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
+                                <img class="titlecard-banner" src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <table class="product-data table table-bordered">
@@ -170,6 +171,30 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                             } ?>
                                         </td>
                                     </tr>
+                                    <tr class="location">
+                                        <td>地點：</td>
+                                        <td>
+                                            <?php
+                                            for ($i = 0; $i < count($location); $i++) {
+                                                switch ($location[$i]) {
+                                                    case 'northern':
+                                                        echo '北部';
+                                                        break;
+                                                    case 'central':
+                                                        echo '中部';
+                                                        break;
+                                                    case 'southern':
+                                                        echo '南部';
+                                                        break;
+                                                    case 'eastern':
+                                                        echo '東部';
+                                                        break;
+                                                    case  'oversea';
+                                                        echo '海外';
+                                                }
+                                            } ?>
+                                        </td>
+                                    </tr>
                                     <tr class="des">
                                         <td>行程介紹：</td>
                                         <td><?= $product['description'] ?></td>
@@ -179,11 +204,11 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                         <td>5</td>
                                     </tr>
                                     <tr class="imgs">
-                                        <td>目前上傳圖片：</td>
+                                        <td>目前上傳圖片：<br><span>※可點擊後刪除</span></td>
                                         <td>
-                                            <?php $realCount = array_filter($pictureArr);?>
-                                            <?php for ($i = 0; $i < count($realCount); $i++) : ?>
-                                                <img src="./assets//imgs/<?= $pictureArr[$i]?>" alt="<?= $pictureArr[$i]?>">
+                                            <?php $pictureArrClean = array_filter($pictureArr);?>
+                                            <?php for ($i = 0; $i < count($pictureArrClean); $i++) : ?>
+                                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArrClean[$i]?>" alt="<?= $pictureArrClean[$i]?>" title="<?= $pictureArr[$i]?>">
                                             <?php endfor; ?>
                                         </td>
                                     </tr>
@@ -271,7 +296,7 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                 <div class="products-control">
                                     <h4><?= $productOld["trip_name"] ?></h4>
                                 </div>
-                                <img class="titlecard-banner" src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
+                                <img class="titlecard-banner" src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <table class="product-data table table-bordered">
@@ -297,6 +322,30 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                             } ?>
                                         </td>
                                     </tr>
+                                    <tr class="location">
+                                        <td>地點：</td>
+                                        <td>
+                                            <?php
+                                            for ($i = 0; $i < count($location); $i++) {
+                                                switch ($location[$i]) {
+                                                    case 'northern':
+                                                        echo '北部';
+                                                        break;
+                                                    case 'central':
+                                                        echo '中部';
+                                                        break;
+                                                    case 'southern':
+                                                        echo '南部';
+                                                        break;
+                                                    case 'eastern':
+                                                        echo '東部';
+                                                        break;
+                                                    case  'oversea';
+                                                        echo '海外';
+                                                }
+                                            } ?>
+                                        </td>
+                                    </tr>
                                     <tr class="des">
                                         <td>行程介紹：</td>
                                         <td><?= $productOld['description'] ?></td>
@@ -308,8 +357,9 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                     <tr class="imgs">
                                         <td>目前上傳圖片：</td>
                                         <td>
-                                            <?php for ($i = 0; $i < count($pictureArr); $i++) : ?>
-                                                <img src="./assets//imgs/<?= $pictureArr[$i]?>" alt="<?= $pictureArr[$i]?>">
+                                        <?php $pictureArrClean = array_filter($pictureArr);?>
+                                            <?php for ($i = 0; $i < count($pictureArrClean); $i++) : ?>
+                                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArrClean[$i]?>" alt="<?= $pictureArrClean[$i]?>" title="<?= $pictureArr[$i]?>">
                                             <?php endfor; ?>
                                         </td>
                                     </tr>

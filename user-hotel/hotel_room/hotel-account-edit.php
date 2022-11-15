@@ -254,7 +254,7 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
             </div>
 
             <!-- ================ 飯店帳號 Details List ================= -->
-            <div class="details">
+            <div class="m-5">
                 <div class="recentOrders">
                     <div class="cardHeader">
                         <h2>Hotel清單</h2>
@@ -349,8 +349,9 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                                     </tr>
                                     <tr>
                                         <td>信箱</td>
-                                        <td>
-                                            <input type="text" class="form-control" value="<?= $row["email"] ?>" name="email">
+                                        <td class="text-start">
+                                        <?= $row["email"] ?>
+                                            <input type="hidden" class="form-control" value="<?= $row["email"] ?>" name="email">
                                         </td>
                                     </tr>
                                     <tr>
@@ -427,48 +428,48 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                 </div>
 
                 <!-- ================= 房型列表 ================ -->
-                <div class="recentCustomers">
+                <!-- <div class="recentCustomers">
                     <div class="cardHeader">
                         <h2>房型列表</h2>
-                        <?php if (isset($_GET["search"]) && $_GET["search"] !== "") : ?>
-                            <h2>"<?= $_GET["search"] ?>"的收尋結果</h2>
-                        <?php endif; ?>
+                        <//?php if (isset($_GET["search"]) && $_GET["search"] !== "") : ?>
+                            <h2>"<//?= $_GET["search"] ?>"的收尋結果</h2>
+                        <//?php endif; ?>
                     </div>
 
                     <table>
-                        <?php foreach ($roomListRows as $room) : ?>
+                        <//?php foreach ($roomListRows as $room) : ?>
                             <tr>
                                 <td width="300px">
-                                    <div class="imgBx"><img src="../upload/<?= $room["picture"] ?>" alt=""></div>
+                                    <div class="imgBx"><img src="../upload/<//?= $room["picture"] ?>" alt=""></div>
                                 </td>
                                 <td>
-                                    <h2 class=""><?= $room["room"] ?> <br>
+                                    <h2 class=""><//?= $room["room"] ?> <br>
                                         <button class="btn btn-info roomView">檢視</button>
-                                        <a class="btn btn-danger" href="./doDelete2_room.php?room=<?= $room["room"] ?>">下架</a>
-                                        <div class=" d-none fs-3 roomDetail">價格: <?= $room["price"] ?> 空房數: <?= $room["amount"] ?>
+                                        <a class="btn btn-danger" href="./doDelete2_room.php?room=<//?= $room["room"] ?>">下架</a>
+                                        <div class=" d-none fs-3 roomDetail">價格: <//?= $room["price"] ?> 空房數: <//?= $room["amount"] ?>
                                         </div>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <//?php endforeach; ?>
                     </table>
-                    <?php if (!isset($_GET["search"])) : ?>
+                    <//?php if (!isset($_GET["search"])) : ?>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
-                                    <li class="page-item <?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="hotel-account.php?page=<?= $i ?>"><?= $i ?></a></li>
-                                <?php endfor; ?>
+                                <//?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+                                    <li class="page-item <//?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="hotel-account.php?page=<//?= $i ?>"><//?= $i ?></a></li>
+                                <//?php endfor; ?>
                             </ul>
                         </nav>
-                    <?php else : ?>
+                    <//?php else : ?>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
-                                    <li class="page-item <?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="hotel-account.php?page=<?= $i ?>&&search=<?= $_GET["search"] ?>"><?= $i ?></a></li>
-                                <?php endfor; ?>
+                                <//?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+                                    <li class="page-item <//?php if ($i == $page) echo "active"; ?>"><a class="page-link" href="hotel-account.php?page=<//?= $i ?>&&search=<//?= $_GET["search"] ?>"><//?= $i ?></a></li>
+                                <//?php endfor; ?>
                             </ul>
                         </nav>
-                    <?php endif; ?>
-                </div>
+                    <//?php endif; ?>
+                </div> -->
             </div>
         </div>
     </div>

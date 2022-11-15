@@ -46,7 +46,7 @@ if ($_FILES["picture"]["error"] == 0) {
         $picture = $_FILES["picture"]["name"];
         $now = date('Y-m-d H:i:s');
         $sqlRoomList = "UPDATE hotel_room_list SET owner='$account', room_name='$roomType', price='$price', amount='$amount', picture='$picture', description='$description', created_at='$now', valid=1 room_name='$roomType'";
-        $sqlRoomService = "UPDATE room_service_list SET room='$roomType', pet='$pet', tv='$tv', tub='$tub', meal='$meal', mini_bar='$miniBar', window='$window', corner='$corner' WHERE room='$roomType'";
+        $sqlRoomService = "UPDATE room_service_list SET room='$roomType', pet='$pet', tv='$tv', tub='$tub', meal='$meal', mini_bar='$mini_Bar', window='$window', corner='$corner' WHERE room='$roomType'";
         if ($conn->query($sqlRoomList) && $conn->query($sqlRoomService) === TRUE) {
             $last_id = $conn->insert_id;
             /* echo "新資料輸入成功, id: $last_id"; */

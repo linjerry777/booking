@@ -357,7 +357,7 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
             <div class="cardHeader">
                 <h2>房型列表</h2>
                 <?php if (isset($_GET["search"]) && $_GET["search"] !== "") : ?>
-                    <h2>"<?= $_GET["search"] ?>"的收尋結果</h2>
+                    <h2>"<?= $_GET["search"] ?>"的搜尋結果</h2>
                 <?php endif; ?>
             </div>
             <?php foreach ($roomListRows as $serviceOfRoom) : ?>
