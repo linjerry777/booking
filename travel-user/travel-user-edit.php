@@ -15,7 +15,7 @@ $result = $conn->query($sqlUserAccount);
 //設置userCount 看看帳號存不存在
 $userCount = $result->num_rows;
 $rows = $result->fetch_assoc();
- 
+
 
 //將變數$account的值設為 account實際名稱
 $_SESSION['account'] = $rows['account'];
@@ -122,7 +122,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                     </a>
                 </li>
                 <li>
-                <a href="../doSignout.php">
+                    <a href="../doSignout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -238,7 +238,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                         </td>
                                     </tr> -->
                                     <tr>
-                                    <input type="hidden" name="id" value="<?= $rows["id"] ?>">
+                                        <input type="hidden" name="id" value="<?= $rows["id"] ?>">
                                     </tr>
                                     <td>會員帳號</td>
                                     <td>
@@ -267,7 +267,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                     <tr>
                                         <td>開業日期</td>
                                         <td>
-                                            <input type="text" disabled class="form-control" value="<?= $rows["start_date"] ?>" name="start_date">
+                                            <input type="date" class="form-control" value="<?= $rows["start_date"] ?>" name="start_date">
                                         </td>
                                     </tr>
                                     <tr>

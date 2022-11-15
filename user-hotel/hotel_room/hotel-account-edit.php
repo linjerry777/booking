@@ -33,6 +33,7 @@ $hotelAccountRow = $hotelAccountResult->fetch_assoc();
 $sqlHotelService = "SELECT * FROM hotel_service_list WHERE hotel_service_list.hotel='$account'";
 $hotelServiceResult = $conn->query($sqlHotelService);
 $hotelServiceRow = $hotelServiceResult->fetch_assoc();
+//var_dump($hotelServiceRow);
 
 /* 房間清單sql */
 /* $sqlRoomList = "SELECT hotel_room_list.*, room_service_list.* FROM hotel_room_list JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room WHERE hotel_room_list.owner='$account' AND valid=1";
@@ -360,6 +361,65 @@ $roomListRows = $roomListResult->fetch_all(MYSQLI_ASSOC);
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="mb-2">
+                        <label for="service" class="mb-2">飯店服務</label>
+                        <div class="row">
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="wifi" <?php if($hotelServiceRow["wifi"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="wifi">
+                                    無線網路
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="pool" <?php if($hotelServiceRow["pool"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="pool">
+                                    泳池
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="gym" <?php if($hotelServiceRow["gym"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="gym">
+                                    健身房
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="restaurant" <?php if($hotelServiceRow["restaurant"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="restaurant">
+                                    餐廳
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="bar" <?php if($hotelServiceRow["bar"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="bar">
+                                    酒吧
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="parking" <?php if($hotelServiceRow["parking"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="parking">
+                                    停車場
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="laundry" <?php if($hotelServiceRow["laundry"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="laundry">
+                                    洗衣間
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="meeting_room" <?php if($hotelServiceRow["meeting_room"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="meeting_room">
+                                    會議空間
+                                </label>
+                            </div>
+                            <div class="form-check col-lg-4 col-md-6">
+                                <input class="form-check-input" type="checkbox" value="1" name="arcade" <?php if($hotelServiceRow["arcade"]==1) echo "checked" ?>>
+                                <label class="form-check-label" for="arcade">
+                                    娛樂間
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                             <button class="btn btn-info" type="submit">送出</button>
                         </form>
                     <?php endif; ?>

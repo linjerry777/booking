@@ -8,6 +8,7 @@ session_start();
     echo "請循正常管道進入本頁";
     exit;
 } */
+
 if (!isset($_SESSION["email"])) {
     echo "請循正常管道進入本頁";
     exit;

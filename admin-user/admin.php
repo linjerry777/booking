@@ -498,9 +498,9 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                             <tr>
                                 <!-- <td>id</td> -->
                                 <td>帳戶</td>
-                                <td>姓名</td>
-                                <td>電話</td>
+                                <td>公司名稱</td>
                                 <td>商品</td>
+                                <td>是否付費</td>
                                 <td>操作</td>
                             </tr>
                         </thead>
@@ -512,7 +512,15 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                                         <td><?= $row["user"] ?></td>
                                         <td><?= $row["company_id"] ?></td>
                                         <td><?= $row["product_id"] ?></td>
-                                        <td><?= $row["status"] ?></td>
+                                        <td>
+                                            <?php
+                                                if ($row["status"] == 0) {
+                                                    echo "是";
+                                                } else if ($row["status"] == 1) {
+                                                    echo "否";
+                                                }
+                                            ?>
+                                        </td>
 
                                         <td>
                                             <a class="btn btn-info" href="admin-user-product.php?account=<?= $row["account"] ?>">檢視</a>

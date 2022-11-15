@@ -222,9 +222,9 @@ if (!isset($_SESSION["account"])) {
                                 </label>
                             </div>
                             <div class="form-check col-lg-4 col-md-6">
-                                <input class="form-check-input" type="checkbox" value="1" name="mini-bar">
-                                <label class="form-check-label" for="minibar">
-                                    mini-bar
+                                <input class="form-check-input" type="checkbox" value="1" name="mini_bar">
+                                <label class="form-check-label" for="mini_bar">
+                                    mini_bar
                                 </label>
                             </div>
                             <div class="form-check col-lg-4 col-md-6">

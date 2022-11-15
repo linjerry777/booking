@@ -22,7 +22,7 @@ $sqlbirthday = "SELECT * FROM users WHERE birthday = '$nowsevenday' ";
 $resultBirthday = $conn->query($sqlbirthday);
 $birthdayCount = $resultBirthday->num_rows;
 // echo $account;
-$sqlorderlist = "SELECT * FROM total_order_list INNER JOIN total_order_list_detail ON total_order_list.product_id = total_order_list_detail.product_id AND total_order_list.user = '$account' ";
+$sqlorderlist = "SELECT * FROM total_order_list INNER JOIN total_order_list_detail ON total_order_list.product_id = total_order_list_detail.product_id_detail AND total_order_list.user = '$account' ";
 $resultsqlorderlist = $conn->query($sqlorderlist);
 $product = $resultsqlorderlist->fetch_all(MYSQLI_ASSOC);
 

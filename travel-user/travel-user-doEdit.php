@@ -39,13 +39,14 @@ $email = $_POST['email'];
 $bank_account = $_POST['bank_account'];
 $website = $_POST['website'];
 $introduction = $_POST['introduction'];
+$start_date = $_POST['start_date'];
 
 // echo "$name, $phone, $email";
 var_dump_pre($travel_account);
 var_dump_pre($password);
 
 
-$sql = "UPDATE travel_account SET account='$travel_account', password='$password',name='$name',company_name='$company_name',area='$area',company_phone='$company_phone',email='$email',bank_account='$bank_account',website='$website',introduction='$introduction' WHERE id='$id'";
+$sql = "UPDATE travel_account SET account='$travel_account', password='$password',name='$name',start_date='$start_date',company_name='$company_name',area='$area',company_phone='$company_phone',email='$email',bank_account='$bank_account',website='$website',introduction='$introduction' WHERE id='$id'";
 $sqlTrip = "UPDATE trip_event SET owner = $travel_account WHERE trip_event.owner = '$account'";
 
 

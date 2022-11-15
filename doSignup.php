@@ -1,6 +1,8 @@
 <?php
 require_once("../db-connect2.php");
+session_start();
 
+$_SESSION["email"] = $_POST["email"];
 $accessRight = $_POST["accessRight"];
 
 $account = $_POST["account"];
@@ -61,17 +63,16 @@ VALUES ('$account','$email','$password','$now','$valid')";
         exit;
     }
     // $password = md5($password);
-    $sqlCreate = "INSERT INTO hotel_account (account,email,password,created_at,valid)
-VALUES ('$account','$email','$password','$now','$valid')";
-
-    if ($conn->query($sqlCreate) === TRUE) {
+    $sqlCreate = "INSERT INTO hotel_account (account,email,password,created_at,valid) VALUES ('$account','$email','$password','$now','$valid')";
+    $sqlservicelist = "INSERT INTO hotel_service_list (hotel) VALUES ('$account')";
+    if ($conn->query($sqlCreate) === TRUE && $conn->query($sqlservicelist)) {
         $last_id = $conn->insert_id;
         echo "新增資料完成, id: $last_id";
     } else {
         echo "新增資料錯誤: " . $conn->error;
     }
     $conn->close();
-    header("location: hotel/admin.php");
+    header("location: user-hotel/hotel_room/hotel-account.php");
 } else if ($accessRight == 3) {
     $sql = "SELECT * FROM travel_account WHERE account='$account' OR email='$email'";
     $result = $conn->query($sql);
@@ -81,9 +82,7 @@ VALUES ('$account','$email','$password','$now','$valid')";
         exit;
     }
     // $password = md5($password);
-    $sqlCreate = "INSERT INTO travel_account (account,email,password,created_at,valid)
-VALUES ('$account','$email','$password','$now','$valid')";
-
+    $sqlCreate = "INSERT INTO travel_account (account,email,password,created_at,valid) VALUES ('$account','$email','$password','$now','$valid')";
     if ($conn->query($sqlCreate) === TRUE) {
         $last_id = $conn->insert_id;
         echo "新增資料完成, id: $last_id";
@@ -91,7 +90,7 @@ VALUES ('$account','$email','$password','$now','$valid')";
         echo "新增資料錯誤: " . $conn->error;
     }
     $conn->close();
-    header("location: travel/admin-travel.php");
+    header("location: travel-user/travel-user.php");
 }
 
 

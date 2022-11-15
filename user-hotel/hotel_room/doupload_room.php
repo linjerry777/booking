@@ -20,7 +20,7 @@ isset($_POST["pet"]) ? $pet = 1 : $pet = 0;
 isset($_POST["tv"]) ? $tv = 1 : $tv = 0;
 isset($_POST["tub"]) ? $tub = 1 : $tub = 0;
 isset($_POST["meal"]) ? $meal = 1 : $meal = 0;
-isset($_POST["mini-bar"]) ? $miniBar = 1 : $miniBar = 0;
+isset($_POST["mini_bar"]) ? $mini_bar = 1 : $mini_bar = 0;
 isset($_POST["window"]) ? $window = 1 : $window = 0;
 isset($_POST["corner"]) ? $corner = 1 : $corner = 0;
 $account = $_SESSION["account"];
@@ -40,8 +40,8 @@ if ($_FILES["picture"]["error"] == 0) {
         $now = date('Y-m-d H:i:s');
         $sqlRoomList = "INSERT INTO hotel_room_list (owner, room_name, price, amount, picture, description, created_at, valid)
         VALUES ('$account', '$roomType', $price ,$amount, '$picture', '$description', '$now', '1')";
-        $sqlRoomService = "INSERT INTO room_service_list (room, pet, tv, tub, meal, mini_bar, window, corner, valid)
-        VALUES ('$roomType', '$pet', '$tv', '$tub', '$meal', '$miniBar', '$window', '$coner', '1')";
+        $sqlRoomService = "INSERT INTO room_service_list (room, pet, tv, tub, meal, mini_barr, window, corner, valid)
+        VALUES ('$roomType', '$pet', '$tv', '$tub', '$meal', '$mini_bar', '$window', '$coner', '1')";
         if ($conn->query($sqlRoomList) && $conn->query($sqlRoomService) === TRUE) {
             $last_id = $conn->insert_id;
             /* echo "新資料輸入成功, id: $last_id"; */
