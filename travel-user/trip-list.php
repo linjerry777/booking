@@ -26,24 +26,22 @@ $_SESSION['del_location'] = $_SERVER['PHP_SELF'];
 $_SESSION['account'] = $rows['account'];
 $account = $_SESSION['account'];
 
-
-$sqlJoin = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 1 AND TE.owner='$account'";
+// var_dump_pre($account);
+$sqlJoin = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 1 AND TE.owner='$account' AND TE.id = TSL.id";
 $resultJoin = $conn->query($sqlJoin);
 $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
+$productCount = count($rowsJoin); //有幾個上架商品
 
-$sqlJoinOld = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 0 AND TE.owner='$account'";
+
+// var_dump_pre($rowsJoin);
+// var_dump_pre($productCount);
+// echo "<hr style='color:red'>";
+
+$sqlJoinOld = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.valid = 0 AND TE.owner='$account' AND TE.id = TSL.id";
 $resultJoinOld = $conn->query($sqlJoinOld);
 $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
 
-// var_dump_pre($account);
-// var_dump_pre($rowsJoin); 
-
-
-
-
-
-
-
+// var_dump_pre($rowsJoinOld[0]);
 ?>
 
 <!DOCTYPE html>
@@ -137,15 +135,15 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                     <h2>上架中行程</h2>
                     <?php foreach ($rowsJoin as $product) : ?>
                         <!--把資料庫中的字串 用explode化為陣列-->
-                        <?php $pictureArr = explode(',', $product['picture']); ?>
+                        <?php if(!empty($product['picture'])){ $pictureArr = explode(',', $product['picture']);}
+                        else{ $pictureArr =[];} ?>
                         <?php $location = explode(',', ($product['location'])); ?>
-                        <?php $realCount = array_filter($pictureArr);?>
                         <div class="products-items my-2">
                             <div class="titlecard">
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img class="titlecard-banner" src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
+                                <img class="titlecard-banner" src="./assets/imgs/<?= $account ?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <table class="product-data table table-bordered">
@@ -206,9 +204,16 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                     <tr class="imgs">
                                         <td>目前上傳圖片：<br><span>※可點擊後刪除</span></td>
                                         <td>
-                                            <?php $pictureArrClean = array_filter($pictureArr);?>
+                                            <?php 
+                                            if(!empty($product['picture'])) {$pictureArrClean = array_filter($pictureArr);}
+                                            else{$pictureArrClean = [] ; }
+                                            // var_dump_pre($pictureArrClean);
+                                            // var_dump_pre(count($pictureArrClean));
+                                            ?>
                                             <?php for ($i = 0; $i < count($pictureArrClean); $i++) : ?>
-                                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArrClean[$i]?>" alt="<?= $pictureArrClean[$i]?>" title="<?= $pictureArr[$i]?>">
+                                                <a href="do-image-delete.php?image=<?= $pictureArrClean[$i] ?>&TSL_id=<?= $product['id'] ?>&name=<?=$product["trip_name"]?>&pictureIndex=<?=$i?>">
+                                                    <img src="./assets/imgs/<?= $account ?>/<?= $pictureArrClean[$i] ?>" alt="<?= $pictureArrClean[$i] ?>" title="<?= $pictureArr[$i] ?>">
+                                                </a>
                                             <?php endfor; ?>
                                         </td>
                                     </tr>
@@ -296,7 +301,7 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                 <div class="products-control">
                                     <h4><?= $productOld["trip_name"] ?></h4>
                                 </div>
-                                <img class="titlecard-banner" src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
+                                <img class="titlecard-banner" src="./assets/imgs/<?= $account ?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <table class="product-data table table-bordered">
@@ -357,9 +362,9 @@ $rowsJoinOld = $resultJoinOld->fetch_all(MYSQLI_ASSOC);
                                     <tr class="imgs">
                                         <td>目前上傳圖片：</td>
                                         <td>
-                                        <?php $pictureArrClean = array_filter($pictureArr);?>
+                                            <?php $pictureArrClean = array_filter($pictureArr); ?>
                                             <?php for ($i = 0; $i < count($pictureArrClean); $i++) : ?>
-                                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArrClean[$i]?>" alt="<?= $pictureArrClean[$i]?>" title="<?= $pictureArr[$i]?>">
+                                                <img src="./assets/imgs/<?= $account ?>/<?= $pictureArrClean[$i] ?>" alt="<?= $pictureArrClean[$i] ?>" title="<?= $pictureArr[$i] ?>">
                                             <?php endfor; ?>
                                         </td>
                                     </tr>

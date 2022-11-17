@@ -10,12 +10,15 @@ $location = $_SESSION['del_location'];
 $account = $_SESSION['account'];    
 // var_dump_pre($location);
 $imageName = $_GET["image"];
-$id = $_GET["id"];
-
+$TSL_id = $_GET["TSL_id"];
+$trip_name = $_GET['name'];
+$pictureIndex = $_GET['pictureIndex'];
 //用sql 找尋需要的變數→圖片位置(str)
-$sqlJoinAll = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND owner='$account'";
+$sqlJoinAll = "SELECT TE.*,TSL.* FROM trip_event AS TE JOIN trip_service_list AS TSL ON TE.trip_name = TSL.trip AND TE.id = TSL.id AND owner='$account' AND TE.valid = 1 AND TSL.id =$TSL_id";
 $resultJoin = $conn->query($sqlJoinAll);
-$rowsJoinAll = $resultJoin->fetch_all(MYSQLI_ASSOC);
+$rowsJoinAll = $resultJoin->fetch_assoc();
+
+var_dump_pre($rowsJoinAll);
 
 
 //從網址獲得要移動檔案的確切名字
@@ -24,6 +27,7 @@ $rowsJoinAll = $resultJoin->fetch_all(MYSQLI_ASSOC);
 //刪除檔案
 //所在地
 echo "./assets/imgs/{$account}/{$imageName}";
+// var_dump_pre($rowsJoinAll);
 
 
 $imgError = unlink("assets/imgs/{$account}/$imageName");
@@ -36,24 +40,33 @@ if ($imgError) {
 }
 
 //把移走的圖片網址從資料庫中清除
-//先取得陣列
-$trip_index = $id-1;
-// var_dump_pre($id);
-$picture_str = $rowsJoinAll[$trip_index]['picture'];
-var_dump($picture_str);
-$picture_arr = explode(',',$picture_str);
-//用array_splice 刪除特定元素
-$targetIndex = array_search("$imageName",$picture_arr);
-array_splice($picture_arr,$targetIndex,1);
-$finalPictureArr = $picture_arr;
-$finalPictureSting = implode(',',$finalPictureArr);
+//先取得陣列 $rowsJoinAll
 
-var_dump_pre($picture_arr);
-var_dump_pre($targetIndex);
+$pictureArr = explode(',',$rowsJoinAll['picture']);
+var_dump_pre($pictureArr);
+array_splice($pictureArr,$pictureIndex,1);
+$finalPictureArr = $pictureArr;
 var_dump_pre($finalPictureArr);
-var_dump_pre($finalPictureSting);
+$finalPictureString = implode(',',$finalPictureArr);
+var_dump_pre($finalPictureString);
 
-$sqlIMG = "UPDATE trip_event SET picture = '$finalPictureSting'  WHERE trip_event.id = '$id' ";
+
+// $picture_str = $rowsJoinAll[$product_index]['picture'];
+// var_dump($picture_str);
+// $picture_arr = explode(',',$picture_str);
+// var_dump_pre($picture_arr);
+// //用array_splice 刪除特定元素
+// $targetIndex = array_search("$imageName",$picture_arr);
+// var_dump_pre($targetIndex);
+// array_splice($picture_arr,$targetIndex,1);
+// $finalPictureArr = $picture_arr;
+// var_dump_pre($finalPictureArr);
+// $finalPictureString = implode(',',$finalPictureArr);
+// var_dump_pre($finalPictureString);
+// // var_dump_pre($id);
+
+//
+$sqlIMG = "UPDATE trip_event SET picture = '$finalPictureString'  WHERE owner = $account AND valid = 1 AND trip_name = '$trip_name' ";
 
 if ($conn->query($sqlIMG) === TRUE) {
     echo "資料庫更新成功";
@@ -61,5 +74,3 @@ if ($conn->query($sqlIMG) === TRUE) {
 } else {
     echo "資料庫更新錯誤: " . $conn->error;
 }
-
-?>

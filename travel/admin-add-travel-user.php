@@ -1,18 +1,18 @@
 <?php
 require_once("../db-connect2.php");
 
-if (isset($_GET["search"])) {
-    $search = $_GET["search"];
-    $sql = "SELECT * FROM travel_account WHERE account LIKE '%$search%' AND valid=1 ORDER BY created_at DESC";
-    $result = $conn->query($sql);
-    $userCount = $result->num_rows;
-    $sqlTravel = "SELECT * FROM trip_event WHERE valid=1 ORDER BY created_at DESC LIMIT  $per_page ";
-    $resultTravel = $conn->query($sqlTravel);
-    $travelCount=$resultTravel->num_rows;
-    $sqlTripComment = "SELECT trip_comment.*,trip_event.owner,trip_event.id,travel_account.account,travel_account.id FROM trip_comment JOIN trip_event ON trip_event.id=trip_comment.trip JOIN travel_account ON trip_event.owner=travel_account.account  WHERE trip_comment.valid=1 ORDER BY created_at";
-    $resultTripComment = $conn->query($sqlTripComment);
-    $tripCommentCount = $resultTripComment->num_rows;
-} else {
+// if (isset($_GET["search"])) {
+//     $search = $_GET["search"];
+//     $sql = "SELECT * FROM travel_account WHERE account LIKE '%$search%' AND valid=1 ORDER BY created_at DESC";
+//     $result = $conn->query($sql);
+//     $userCount = $result->num_rows;
+//     $sqlTravel = "SELECT * FROM trip_event WHERE valid=1 ORDER BY created_at DESC LIMIT  $per_page ";
+//     $resultTravel = $conn->query($sqlTravel);
+//     $travelCount=$resultTravel->num_rows;
+//     $sqlTripComment = "SELECT trip_comment.*,trip_event.owner,trip_event.id,travel_account.account,travel_account.id FROM trip_comment JOIN trip_event ON trip_event.id=trip_comment.trip JOIN travel_account ON trip_event.owner=travel_account.account  WHERE trip_comment.valid=1 ORDER BY created_at";
+//     $resultTripComment = $conn->query($sqlTripComment);
+//     $tripCommentCount = $resultTripComment->num_rows;
+// } else {
     if (isset($_GET["userPage"])) {
         $userPage = $_GET["userPage"];
     } else {
@@ -45,7 +45,7 @@ if (isset($_GET["search"])) {
     $sqlTripComment = "SELECT trip_comment.*,trip_event.owner,trip_event.id,travel_account.account,travel_account.id FROM trip_comment JOIN trip_event ON trip_event.id=trip_comment.trip JOIN travel_account ON trip_event.owner=travel_account.account  WHERE trip_comment.valid=1 ORDER BY created_at";
     $resultTripComment = $conn->query($sqlTripComment);
     $tripCommentCount = $resultTripComment->num_rows;
-}
+// }
 
 
 // $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -228,7 +228,7 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="people-circle-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -243,10 +243,10 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <!-- <div class="card">
+                <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">Travel總成交訂單</div>
+                        <div class="numbers"><?=$travelCount?></div>
+                        <div class="cardName">Travel總上架行程數</div>
                     </div>
 
                     <div class="iconBx">
@@ -254,7 +254,8 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <div class="card">
+
+                <!-- <div class="card">
                     <div>
                         <div class="numbers">$7,842</div>
                         <div class="cardName">Travel總成交額</div>
@@ -350,7 +351,7 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                     <table>
                         <thead>
                             <tr>
-                                <td>id</td>
+                                
                                 <td>Travel業者</td>
                                 <td>行程名稱</td>
                                 <td>價格</td>
@@ -364,7 +365,6 @@ $rowsTravel=$resultTravel->fetch_all(MYSQLI_ASSOC);
                                 <?php foreach ($rowsTravel as $row) : ?>
                                     <tr>
 
-                                        <td><?= $row["id"] ?></td>
                                         <td><?= $row["owner"] ?></td>
                                         <td><?= $row["trip_name"] ?></td>
                                         <td><?= $row["price"] ?></td>

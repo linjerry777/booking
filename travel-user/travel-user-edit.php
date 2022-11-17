@@ -235,7 +235,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                     <tr>
                                         <td>上傳圖片</td>
                                         <td>
-                                            <input type="file" class="form-control" name="company_banner">
+                                            <input type="file" class="form-control" name="company_banner" accept=".jpg,.jpeg,.png,.apng,.gif,.webp">
                                         </td>
                                     </tr>
                                     <td>會員帳號</td>
@@ -332,7 +332,7 @@ $trips = $result->fetch_all(MYSQLI_ASSOC);
                                 <div class="products-control">
                                     <h4><?= $product["trip_name"] ?></h4>
                                 </div>
-                                <img src="./assets/imgs/<?= $pictureArr[0] ?>" alt="">
+                                <img src="./assets/imgs/<?=$account?>/<?= $pictureArr[0] ?>" alt="">
                             </div>
                             <div class="products-summary">
                                 <h5 class="start-date">上架日：

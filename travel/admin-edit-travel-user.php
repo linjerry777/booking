@@ -206,15 +206,15 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
-                <div class="search">
+                <!-- <div class="search">
                     <form action="admin-travel.php" method="get">
                         <label>
                             <input type="text" placeholder="Search here" class="form-control" name="search">
                             <ion-icon name="search-outline"></ion-icon>
-                            <!-- <button type="submit" class="btn btn-info">搜尋</button> -->
+                            <button type="submit" class="btn btn-info">搜尋</button>
                         </label>
                     </form>
-                </div>
+                </div> -->
                 <!-- <?php if (isset($_GET["search"])) : ?>
                     <div class="py-2">
                         <a class="btn btn-info" href="admin.php">回使用者列表</a>
@@ -231,20 +231,20 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers"><?= $userCount ?></div>
-                        <div class="cardName">Travel廠商成交額排行
+                        <div class="numbers"><?= $travelCount ?></div>
+                        <div class="cardName">已上架行程
 
                         </div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                    <ion-icon name="bag-add-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                    <div class="numbers">
+                        <div class="numbers">
                             <?php
                             $avgstars=0;
                             if($tripCommentCount>0){
@@ -265,7 +265,8 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <div class="card">
+
+                <!-- <div class="card">
                     <div>
                         <div class="numbers">284</div>
                         <div class="cardName">成交量</div>
@@ -285,7 +286,7 @@ $rowsTripComment=$resultTripComment->fetch_all(MYSQLI_ASSOC);
                     <div class="iconBx">
                         <ion-icon name="cash-outline"></ion-icon>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- ================ Order Details List ================= -->

@@ -42,9 +42,8 @@ if (isset($_GET["search"])) {
     // $resultTravel = $conn->query($sqlTravel);
     // $travelCount=$resultTravel->num_rows;
     // $page=1;
-   
     $sqlTravelAll = "SELECT * FROM trip_event WHERE valid=1 ORDER BY created_at DESC";
-    $sqlTravel = "SELECT trip_event.*,travel_account.account,travel_account.id as account_id FROM trip_event JOIN travel_account ON trip_event.owner=travel_account.account WHERE  trip_event.valid=1 ORDER BY created_at DESC LIMIT $travelPage_start, $per_page ";
+    $sqlTravel = "SELECT trip_event.*,travel_account.account,travel_account.id as account_id FROM trip_event JOIN travel_account ON trip_event.owner=travel_account.account WHERE  trip_event.valid=1  ORDER BY created_at DESC LIMIT $travelPage_start, $per_page ";
     $resultTravel = $conn->query($sqlTravel);
     $resultTravelAll = $conn->query($sqlTravelAll);
     $travelCount=$resultTravelAll->num_rows;
@@ -89,9 +88,9 @@ if (isset($_GET["search"])) {
 
     
 
-
    
-    $sqlTravel = "SELECT trip_event.*,travel_account.account,travel_account.id as account_id FROM trip_event JOIN travel_account ON trip_event.owner=travel_account.account WHERE  trip_event.valid=1 ORDER BY created_at DESC LIMIT $travelPage_start, $per_page ";
+    $sqlTravel = "SELECT trip_event.*,travel_account.account,travel_account.id as account_id FROM trip_event JOIN travel_account ON trip_event.owner=travel_account.account WHERE  trip_event.valid=1  ORDER BY created_at DESC LIMIT $travelPage_start, $per_page ";
+    
     
     $result = $conn->query($sql);
     $resultTravel = $conn->query($sqlTravel);
@@ -295,7 +294,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="people-circle-outline"></ion-icon>
                     </div>
                 </div>
 
@@ -310,10 +309,10 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <!-- <div class="card">
+                <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">Travel總成交訂單</div>
+                        <div class="numbers"><?=$travelCount?></div>
+                        <div class="cardName">Travel總上架行程數</div>
                     </div>
 
                     <div class="iconBx">
@@ -321,7 +320,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <div class="card">
+                <!-- <div class="card">
                     <div>
                         <div class="numbers">$7,842</div>
                         <div class="cardName">Travel總成交額</div>

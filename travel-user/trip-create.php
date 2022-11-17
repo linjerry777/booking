@@ -112,7 +112,7 @@ $account = $_SESSION['account'];
                     <form action="do-create.php" method="post" enctype="multipart/form-data">
                         <fieldset class="name-price">
                             <legend class="h2">基本資料<span>*</span><small class="h6">星號(*)代表資料必填</small></legend>
-                            <label class="form-label" for="trip_name">行程名稱</label>
+                            <label class="form-label" for="trip_name">行程名稱<small class="h6">※確定後無法更改</small></label>
                             <input class="form-control" type="text" name="trip_name" id="trip_name" required>
                             <div>
                                 <label class="form-label" for="price">價格</label>
@@ -152,12 +152,12 @@ $account = $_SESSION['account'];
 
                         <fieldset class="picture">
                             <legend>宣傳照上傳<span>*</span></legend>
-                            <input class="form-control" type="file" name="picture[]" id="picture" multiple required>
+                            <input class="form-control" type="file" name="picture[]" id="picture" accept=".jpg,.jpeg,.png,.apng,.gif,.webp" multiple required>
                         </fieldset>
                         <fieldset class="description">
                             <legend>行程介紹文案<span>*</span></legend>
                             <label class="form-label" for="description">文案內容</label>
-                            <textarea class="form-control" name="description" id="description" row="40" cols="40" required></textarea>
+                            <textarea class="form-control" name="description" id="description" required></textarea>
                         </fieldset>
                         <!---->
                         <input class="form-control" type="valid" name="valid" id="valid" value="1" style="display:none;">
@@ -216,7 +216,7 @@ $account = $_SESSION['account'];
                     </fieldset>
                     <fieldset class="custom-tag">
                         <legend>自定義屬性<small class="h6">※選填</small></legend>
-                        <p>顯示在介紹文中、可用於關鍵字搜尋<small>※最多五個，以半形斜線(/)隔開</small></p>
+                        <p>顯示在介紹文中<small>※以半形斜線(/)隔開</small></p>
                         <label class="form-label" for="custom_tag">請輸入</label>
                         <input class="form-control" type="text" name="custom_tag" id="custom_tag" placeholder="A/B/C/D/E">
                     </fieldset>

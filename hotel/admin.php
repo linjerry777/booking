@@ -227,7 +227,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers"><?= $userCount ?></div>
+                        <div class="numbers"><?= $userCount ?>家</div>
                         <div class="cardName">HOTEL總數
 
                         </div>

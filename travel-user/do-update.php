@@ -19,7 +19,7 @@ $rowsJoin = $resultJoin->fetch_all(MYSQLI_ASSOC);
 
 
 
-$name = $_POST['trip_name'];
+$trip_name = $_POST['trip_name'];
 $price = $_POST['price'];
 $start_date = $_POST['start_date'];
 $end_date = $_POST['end_date'];
@@ -42,39 +42,75 @@ $location_str = implode(',', $location);
 // var_dump_pre($rowsJoin[0]['picture']);
 
 $origin = $rowsJoin[0]['picture'];
+$originArr = explode(',',$origin);
+$originArr =array_filter($originArr);
 $newImage = $_FILES['picture']['name'];
+$newImage = array_filter($newImage);
 /*
 echo empty($newImage[0]); //1 沒有上傳東西
 echo empty($origin); //1 沒有上傳東西
 */ 
 // var_dump_pre($newImage);
 // echo empty($origin); //1 檔案欄沒東西
-
-if (empty($origin) && empty($newImage[0])) {
+$newImage_arr =[];
+echo "上傳圖片";
+var_dump_pre($newImage);
+var_dump_pre(count($newImage));
+var_dump_pre(empty($newImage));
+echo "<hr>";
+echo "原有圖片";
+var_dump_pre($originArr);
+var_dump_pre(count($originArr));
+var_dump_pre(empty($originArr));
+echo "<hr>";
+if (empty($originArr) && empty($newImage)) {
+    echo "loop1";
     // 沒圖 也沒上船
     echo "<script>alert('請至少上傳封面圖片');</script>";
     header("refresh:1;url=trip-list.php");
     exit;
-}else if (empty($origin) && !empty($newImage[0])) {
+}else if (empty($originArr) && !empty($newImage)) {
+    echo "loop2";
     //沒圖 有上傳
-    $newImage_str = implode(',',$newImage);
-    $picture_str = $newImage_str;
-}else if (!empty($origin) && empty($newImage[0])) {
+    for ($i = 0;$i < count($newImage);$i++){
+        $file_name = $newImage[$i];
+        // var_dump_pre($i);
+        $fileType = pathinfo($file_name,PATHINFO_EXTENSION);
+        $file_name_noEX = basename($file_name,$fileType);
+        $newFileName = $file_name_noEX.$trip_name.".".$fileType;
+        array_push($newImage_arr,$newFileName);
+        var_dump_pre($newImage_arr);
+        $newImage_str = implode(',',$newImage_arr);
+    }
+    // $picture_str = $newImage_str;
+}else if (!empty($originArr) && empty($newImage) && count($originArr)>=2) {
+    echo "loop3-1";
     //有圖 沒上傳
-    $picture_str = $origin;
-}else if (!empty($origin) && !empty($newImage[0])) {
+    $newImage_str = implode(',',$originArr);
+}else if (!empty($originArr) && empty($newImage) && count($originArr)==1){
+    echo "loop3-2";
+    $newImage_str = $origin;    
+}
+else if (!empty($origin) && !empty($newImage)) {
+    echo "loop4";
     //有圖 有上傳
-    $newImage_str = implode(',',$newImage);
-    $picture_str = "$origin";
-    $picture_str .= ",";
-    $picture_str .= $newImage_str;
+    for ($i = 0;$i < count($newImage);$i++) {
+        $file_name = $newImage[$i];
+        // var_dump_pre($file_name);
+        $fileType = pathinfo($file_name,PATHINFO_EXTENSION);
+        $file_name_noEX = basename($file_name,$fileType);
+        $newFileName = $file_name_noEX.$trip_name.".".$fileType;
+        echo "$newFileName";
+        array_push($originArr,$newFileName);
+        $newImage_str = implode(',',$originArr);
+    }
 }
 
 // var_dump_pre($_FILES);
 // is_array($origin);
 // echo is_array($newImage);
 // echo "$picture_str";
-// var_dump_pre($picture_str);
+var_dump_pre($newImage_str);
 
 
 
@@ -95,9 +131,10 @@ $family_friendly = isset($_POST['family_friendly']) ? $_POST['family_friendly'] 
 $pet = isset($_POST['pet']) ? $_POST['pet'] : 0;
 $indoor_outdoor = $_POST['indoor_outdoor'];
 $indoor_outdoor_str = implode(',', $indoor_outdoor);
-$custom_tag = $_POST['custom_tag'];
+$pre_custom_tag = $_POST['custom_tag'];
+$custom_tag = htmlspecialchars($pre_custom_tag, ENT_QUOTES);
 
-// var_dump_pre($name);
+// var_dump_pre($trip_name);
 // var_dump_pre($mountain);
 // var_dump_pre($in_water);
 // var_dump_pre($snow);
@@ -118,30 +155,39 @@ $error = array();
 $targetDir = "assets/imgs/{$account}/";
 $allowTypes = array('jpg', 'jpeg', 'png', 'apng', 'gif', 'webp', 'tmp');
 
-foreach ($_FILES['picture']['tmp_name'] as $key => $tmp_name) {
+foreach ($_FILES['picture']['tmp_name'] as $key => $value) {
     $file_name = $_FILES['picture']['name'][$key];
+    /*tmp_name 裏頭會有 [0]第一張圖[1]第二張圖
+      所以每一個[tmp_name]底下的key，對應著暫存圖名
+      foreach xx as $key => value 是對應xx陣列裏頭的 key & value */
     $file_tmp = $_FILES['picture']['tmp_name'][$key];
+    // var_dump_pre($file_tmp);
     $fileType = pathinfo($file_name, PATHINFO_EXTENSION);
+    $file_name_noEX = basename($file_name, $fileType); 
+    // var_dump_pre($fileType);
     //如果上傳的檔案種類是允許的值
     if (in_array($fileType, $allowTypes)) {
         //確認檔案是否存在
-        if (!file_exists($targetDir . "/" . $file_name)) {
-            move_uploaded_file($file_tmp, $targetDir . "/" . $file_name);
-        } else {
-            $FILENAME = basename($file_name, $fileType);
-            $newFILENAME = $file_name . time() . "." . $fileType;
+        //新圖
+        if (!file_exists($targetDir . "/" . $file_name_noEX . $trip_name . "." . $fileType)) {
+            move_uploaded_file($file_tmp, $targetDir . "/" . $file_name_noEX . $trip_name . "." . $fileType);
+        }
+        //舊圖
+        else {
+            $FILENAME = basename($file_name, $fileType); //取得$file_name 但砍掉 $fileType的部分
+            $newFILENAME = $FILENAME . time() . $trip_name . "." . $fileType;
             move_uploaded_file($file_tmp = $_FILES['picture']['tmp_name'][$key], $targetDir . "/" . $newFILENAME);
         }
     } else {
-        array_push($error, "$file_name, ");
+        array_push($error, "$file_name,檔案格式不符合");
     }
 }
 
 $stmt = $conn->prepare("UPDATE trip_service_list SET trip=?,mountain=?,in_water=?,snow=?,natural_attraction=?,culture_history=?,workshop=?,amusement=?,meal=?,no_shopping=?,family_friendly=?,pet=?,indoor_outdoor=?,custom_tag=? WHERE trip_service_list.trip = '$unique_trip_name' ");
-$stmt->bind_param("siiiiiiiiiiiss",$name, $mountain, $in_water, $snow, $natural_attraction, $culture_history, $workshop, $amusement, $meal, $no_shopping, $family_friendly, $pet, $indoor_outdoor_str, $custom_tag);
+$stmt->bind_param("siiiiiiiiiiiss",$trip_name, $mountain, $in_water, $snow, $natural_attraction, $culture_history, $workshop, $amusement, $meal, $no_shopping, $family_friendly, $pet, $indoor_outdoor_str, $custom_tag);
 $stmt->execute();
 $stmt = $conn->prepare("UPDATE trip_event SET trip_name=?,price=?,start_date=?,end_date=?,description=?,guide=?,location=?,picture=? WHERE trip_event.trip_name = '$unique_trip_name' ");
-$stmt->bind_param('sisssiss', $name, $price, $start_date, $end_date, $description, $guide, $location_str, $picture_str);
+$stmt->bind_param('sisssiss', $trip_name, $price, $start_date, $end_date, $description, $guide, $location_str, $newImage_str);
 $stmt->execute();
 
 
